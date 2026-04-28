@@ -1,7 +1,35 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
+
+// Inisialisasi Rate Limiter
+const ratelimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(10, "60 s"),
+  analytics: true,
+  prefix: "@upstash/ratelimit",
+});
 
 export async function proxy(request: NextRequest) {
+  // 1. Rate Limiting Logic
+  const currentPath = request.nextUrl.pathname;
+
+  if (currentPath.startsWith('/login') || currentPath.startsWith('/register') || currentPath.startsWith('/api')) {
+    const ip = request.ip ?? "127.0.0.1";
+    try {
+      const { success } = await ratelimit.limit(ip);
+      if (!success) {
+        return NextResponse.json(
+          { error: "Too many requests", message: "Silakan coba lagi dalam 1 menit." }, 
+          { status: 429 }
+        );
+      }
+    } catch (error) {
+      console.error("Ratelimit Error:", error);
+    }
+  }
+
   let supabaseResponse = NextResponse.next({
     request: {
       headers: request.headers,
@@ -17,7 +45,6 @@ export async function proxy(request: NextRequest) {
           return request.cookies.get(name)?.value
         },
         set(name: string, value: string, options: CookieOptions) {
-          // If the cookie is updated, update the cookies for the request and response
           request.cookies.set({
             name,
             value,
@@ -35,7 +62,6 @@ export async function proxy(request: NextRequest) {
           })
         },
         remove(name: string, options: CookieOptions) {
-          // If the cookie is removed, update the cookies for the request and response
           request.cookies.set({
             name,
             value: '',
@@ -56,35 +82,24 @@ export async function proxy(request: NextRequest) {
     }
   )
 
-  // Refresh session if expired
+  // ✅ Hanya 1 network call: verifikasi token JWT (tidak ada DB query)
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const currentPath = request.nextUrl.pathname;
-
-  // Protect admin routes
+  // Protect admin and dashboard routes
   if (currentPath.startsWith('/admin') || currentPath.startsWith('/dashboard')) {
     if (!user) {
       // Redirect to login if unauthenticated
       return NextResponse.redirect(new URL('/login', request.url))
     }
 
-    // Role check logic (you'd ideally fetch the profile role here)
-    // For now, let's just make sure they are logged in.
-    // In a real app, we should fetch from public.profiles where id = user.id
-    // But since middleware runs on Edge, querying the DB is possible but adds latency.
-    // We will do a quick check:
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single()
+    // ✅ OPTIMASI: Baca role dari user metadata (sudah ada di JWT, TANPA query DB)
+    // Role disimpan di app_metadata atau user_metadata saat user dibuat/diupdate
+    const role = user.user_metadata?.role as string | undefined;
 
-    const role = profile?.role;
-
-    if (currentPath.startsWith('/admin') && !['super_admin', 'admin_dinas'].includes(role)) {
-       return NextResponse.redirect(new URL('/dashboard', request.url)) // redirect non-admins
+    if (currentPath.startsWith('/admin') && !['super_admin', 'admin_dinas'].includes(role ?? '')) {
+       return NextResponse.redirect(new URL('/dashboard', request.url))
     }
   }
 

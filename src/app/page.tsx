@@ -7,7 +7,7 @@ const PurbalinggaMap = dynamic(() => import('@/components/map/PurbalinggaMap'), 
   loading: () => <div className="w-full h-full bg-slate-100 animate-pulse flex items-center justify-center text-slate-400">Memuat Peta...</div>
 });
 import Sidebar from '@/components/layout/Sidebar';
-import UserNav from '@/components/layout/UserNav';
+import Navbar from '@/components/layout/Navbar';
 import { createClient } from '@/lib/supabase/client';
 import { MapPin, Menu } from 'lucide-react';
 
@@ -16,7 +16,6 @@ export default function Home() {
   const [umkmData, setUmkmData] = useState<any[]>([]);
   const [selectedUmkm, setSelectedUmkm] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const supabase = createClient();
 
   useEffect(() => {
     // Fetch GeoJSON
@@ -25,9 +24,10 @@ export default function Home() {
       .then(data => setGeoJsonData(data))
       .catch(err => console.error("Error loading GeoJSON:", err));
 
-    // Fetch UMKM Data
+    // Fetch UMKM Data — supabase dibuat di dalam effect agar tidak jadi dependency
     const fetchUmkm = async () => {
       setIsLoading(true);
+      const supabase = createClient();
       const { data, error } = await supabase
         .from('umkm')
         .select(`
@@ -44,26 +44,11 @@ export default function Home() {
     };
 
     fetchUmkm();
-  }, [supabase]);
+  }, []); // ✅ Empty array: hanya jalan sekali saat mount
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-slate-50">
-      {/* Top Navbar */}
-      <header className="h-16 bg-white border-b flex items-center justify-between px-4 z-50 shrink-0 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="bg-blue-600 p-2 rounded-lg text-white">
-            <MapPin size={20} />
-          </div>
-          <div>
-            <h1 className="font-black text-xl text-slate-800 tracking-tight leading-none">PURBALINGGA</h1>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Peta Distribusi UMKM</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <UserNav />
-        </div>
-      </header>
+      <Navbar />
 
       {/* Main Content Area */}
       <main className="flex flex-1 overflow-hidden relative">

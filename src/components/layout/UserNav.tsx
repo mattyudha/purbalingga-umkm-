@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -13,10 +13,13 @@ export default function UserNav() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
+  // ✅ Gunakan useRef agar instance supabase stabil dan tidak trigger re-render
+  const supabaseRef = useRef(createClient());
   const router = useRouter();
 
   useEffect(() => {
+    const supabase = supabaseRef.current;
+
     async function getAuth() {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
@@ -41,10 +44,10 @@ export default function UserNav() {
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase]);
+  }, []); // ✅ Empty array: supabase stabil via ref, tidak perlu di dependency
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await supabaseRef.current.auth.signOut();
     router.refresh();
   };
 
