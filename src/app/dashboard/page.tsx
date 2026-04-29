@@ -9,6 +9,7 @@ import {
   Settings, User as UserIcon, LayoutDashboard,
   ArrowRight
 } from 'lucide-react'
+import ProfileSection from '@/components/dashboard/ProfileSection'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -128,31 +129,7 @@ export default async function DashboardPage() {
             </div>
 
             {/* Profile Summary / Settings */}
-            <div className="space-y-4">
-              <h2 className="text-xl font-bold text-slate-800 ml-1">Pengaturan Akun</h2>
-              <Card className="border-0 shadow-sm rounded-2xl overflow-hidden bg-white">
-                <CardContent className="p-8">
-                  <div className="flex flex-col items-center text-center space-y-4">
-                    <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 border-4 border-slate-50 shadow-inner">
-                      <UserIcon size={48} strokeWidth={1.5} />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-slate-900">{profile?.full_name}</h3>
-                      <p className="text-sm text-slate-500">{user.email}</p>
-                    </div>
-                    
-                    <div className="w-full pt-4 space-y-3">
-                      <Button variant="outline" className="w-full rounded-xl gap-2 h-11 border-slate-200">
-                        <Settings size={18} /> Edit Profil
-                      </Button>
-                      <Button variant="ghost" className="w-full rounded-xl text-red-600 hover:bg-red-50 h-11">
-                        Keluar dari Sesi
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <ProfileSection profile={profile} userEmail={user.email!} />
           </div>
         </div>
       </main>

@@ -11,7 +11,7 @@ const ratelimit = new Ratelimit({
   prefix: "@upstash/ratelimit",
 });
 
-export default async function middleware(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
   // 1. Rate Limiting Logic
   const currentPath = request.nextUrl.pathname;
 

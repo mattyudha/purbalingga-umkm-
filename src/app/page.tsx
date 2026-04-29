@@ -13,39 +13,64 @@ import { MapPin, Menu } from 'lucide-react';
 
 export default function Home() {
   const [geoJsonData, setGeoJsonData] = useState<any>(null);
+  const [maskData, setMaskData] = useState<any>(null);
   const [umkmData, setUmkmData] = useState<any[]>([]);
   const [selectedUmkm, setSelectedUmkm] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch GeoJSON
+    // Fetch GeoJSON Kecamatan
     fetch('/geojson/purbalingga-kecamatan.geojson')
       .then(res => res.json())
       .then(data => setGeoJsonData(data))
-      .catch(err => console.error("Error loading GeoJSON:", err));
+      .catch(err => console.error("Error loading GeoJSON Kecamatan:", err));
 
-    // Fetch UMKM Data — supabase dibuat di dalam effect agar tidak jadi dependency
+    // Fetch GeoJSON Mask (Spotlight effect)
+    fetch('/geojson/purbalingga-mask.geojson')
+      .then(res => res.json())
+      .then(data => setMaskData(data))
+      .catch(err => console.error("Error loading GeoJSON Mask:", err));
+
+    // Fetch UMKM Data
     const fetchUmkm = async () => {
       setIsLoading(true);
       const supabase = createClient();
+      
+      // Try full query with relations
       const { data, error } = await supabase
         .from('umkm')
         .select(`
           *,
           kategori_umkm(nama),
-          umkm_photos(cloudinary_url)
+          umkm_photos(cloudinary_url),
+          menu_items(*),
+          reviews(*)
         `)
-        .eq('status_verifikasi', 'approved')
-        .limit(100);
+        .eq('status_verifikasi', 'approved');
       
-      if (!error && data) {
+      if (error) {
+        console.warn("Relational query failed (likely missing tables):", error.message);
+        // Fallback to basic query
+        const { data: fallbackData, error: fallbackError } = await supabase
+          .from('umkm')
+          .select(`
+            *,
+            kategori_umkm(nama),
+            umkm_photos(cloudinary_url)
+          `)
+          .eq('status_verifikasi', 'approved');
+          
+        if (!fallbackError && fallbackData) {
+          setUmkmData(fallbackData);
+        }
+      } else if (data) {
         setUmkmData(data);
       }
       setIsLoading(false);
     };
 
     fetchUmkm();
-  }, []); // ✅ Empty array: hanya jalan sekali saat mount
+  }, []);
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-slate-50">
@@ -65,6 +90,7 @@ export default function Home() {
         <div className="flex-1 relative bg-slate-100">
           <PurbalinggaMap 
             geoJsonData={geoJsonData} 
+            maskData={maskData}
             umkmData={umkmData} 
             selectedUmkm={selectedUmkm}
             onSelectUmkm={setSelectedUmkm}

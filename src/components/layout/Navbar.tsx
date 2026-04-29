@@ -40,13 +40,20 @@ export default function Navbar() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="bg-blue-600 p-2 rounded-xl text-white shadow-blue-200 shadow-lg group-hover:scale-105 transition-transform duration-200">
-              <MapPin size={22} />
-            </div>
+          <Link href="/" className="flex items-center gap-3 group">
+            <img 
+              src="/purbalinggalogo.png" 
+              alt="Logo Purbalingga" 
+              className="h-10 w-auto object-contain group-hover:scale-105 transition-transform duration-200"
+            />
             <div className="flex flex-col">
-              <span className="font-black text-xl text-slate-900 tracking-tight leading-none uppercase">Purbalingga</span>
-              <span className="text-[10px] font-bold text-blue-600 uppercase tracking-[0.2em] mt-0.5">Sistem Informasi UMKM</span>
+              <span className="font-heading font-black text-2xl tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-r from-slate-950 via-blue-900 to-slate-900 uppercase">
+                Purbalingga
+              </span>
+              <span className="text-[9px] font-black text-blue-600/80 uppercase tracking-[0.3em] mt-1.5 flex items-center gap-2">
+                <span className="w-8 h-[1px] bg-blue-100" />
+                Sistem Informasi UMKM
+              </span>
             </div>
           </Link>
 

@@ -44,7 +44,7 @@ export default function LoginPage() {
             .eq('id', user.id);
         }
       }
-      
+
       router.push('/dashboard');
       router.refresh();
     }
@@ -55,31 +55,31 @@ export default function LoginPage() {
       {/* Left Side - Premium Map Visual */}
       <div className="hidden lg:flex lg:w-[55%] relative overflow-hidden bg-slate-900">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/purbalingga_map_visual_1777380737454.png" 
-            alt="Purbalingga Map Visual" 
+          <img
+            src="/purbalingga_map_visual_1777380737454.png"
+            alt="Purbalingga Map Visual"
             className="w-full h-full object-cover opacity-60 scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/40 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-slate-900/30" />
         </div>
-        
+
         <div className="relative z-10 w-full flex flex-col justify-between p-16 text-white">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
             className="flex items-center gap-4 group cursor-pointer"
           >
-            <div className="bg-white/10 backdrop-blur-xl p-3 rounded-2xl border border-white/20 shadow-2xl group-hover:bg-white group-hover:text-blue-600 transition-all duration-300">
-              <MapPin size={32} />
+            <div className="bg-white/10 backdrop-blur-xl p-2 rounded-2xl border border-white/20 shadow-2xl group-hover:bg-white transition-all duration-300">
+              <img src="/purbalinggalogo.png" alt="Logo" className="w-12 h-12 object-contain" />
             </div>
             <div className="flex flex-col">
               <span className="text-3xl font-black tracking-tighter uppercase leading-none">Purbalingga</span>
-              <span className="text-[10px] font-bold text-blue-400 tracking-[0.3em] uppercase mt-1">Enterprise GIS Portal</span>
+              <span className="text-[10px] font-bold text-blue-400 tracking-[0.3em] uppercase mt-1">GIS Portal Untu UMKM Purbalingga</span>
             </div>
           </motion.div>
-          
+
           <div className="max-w-xl">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -91,15 +91,15 @@ export default function LoginPage() {
                 <span>Resmi Pemerintah Kabupaten Purbalingga</span>
               </div>
               <h1 className="text-6xl font-black leading-[1.1] mb-8 tracking-tight">
-                Transformasi Digital <br/>
+                Transformasi Digital <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">UMKM Purbalingga.</span>
               </h1>
               <p className="text-slate-300 text-xl leading-relaxed font-medium mb-10 max-w-lg">
                 Sistem Informasi Geografis terintegrasi untuk pemetaan, analisis, dan pengembangan ekosistem ekonomi kreatif daerah.
               </p>
             </motion.div>
-            
-            <motion.div 
+
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
@@ -121,7 +121,7 @@ export default function LoginPage() {
               </div>
             </motion.div>
           </div>
-          
+
           <div className="text-slate-500 text-sm font-medium">
             © 2026 Pemerintah Kabupaten Purbalingga • Layanan Digital Terpadu
           </div>
@@ -134,7 +134,7 @@ export default function LoginPage() {
         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2" />
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -142,8 +142,8 @@ export default function LoginPage() {
         >
           <div className="lg:hidden flex justify-center mb-12">
             <Link href="/" className="flex flex-col items-center gap-2">
-              <div className="bg-blue-600 p-4 rounded-3xl text-white shadow-2xl shadow-blue-500/20">
-                <MapPin size={32} />
+              <div className="bg-blue-600 p-2 rounded-3xl text-white shadow-2xl shadow-blue-500/20">
+                <img src="/purbalinggalogo.png" alt="Logo" className="w-12 h-12 object-contain brightness-0 invert" />
               </div>
               <span className="text-2xl font-black tracking-tight text-slate-900 uppercase">Purbalingga</span>
             </Link>
@@ -157,7 +157,7 @@ export default function LoginPage() {
             <h2 className="text-4xl font-black text-slate-900 mb-4 tracking-tight leading-tight">Selamat Datang Kembali.</h2>
             <p className="text-slate-500 text-lg font-medium leading-relaxed">Masukkan kredensial Anda untuk mengakses panel manajemen UMKM.</p>
           </div>
-          
+
           <div className="space-y-8">
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-3">
@@ -166,18 +166,18 @@ export default function LoginPage() {
                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Required</span>
                 </Label>
                 <div className="relative group">
-                  <Input 
-                    id="email" 
-                    type="email" 
-                    placeholder="nama@email.com" 
-                    required 
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="nama@email.com"
+                    required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="h-14 bg-white border-slate-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-600/5 transition-all rounded-2xl px-5 text-base font-medium placeholder:text-slate-300 shadow-sm"
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-3">
                 <div className="flex items-center justify-between ml-1">
                   <Label htmlFor="password" className="text-slate-800 font-bold text-sm">Kata Sandi</Label>
@@ -186,9 +186,9 @@ export default function LoginPage() {
                   </Link>
                 </div>
                 <div className="relative group">
-                  <Input 
-                    id="password" 
-                    type={showPassword ? 'text' : 'password'} 
+                  <Input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -205,7 +205,7 @@ export default function LoginPage() {
               </div>
 
               {error && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   className="p-4 bg-red-50 text-red-600 text-sm font-bold rounded-2xl border border-red-100 flex items-center gap-3 shadow-sm shadow-red-100"
@@ -245,7 +245,7 @@ export default function LoginPage() {
               </Link>
             </div>
           </div>
-          
+
           <div className="mt-16 flex flex-col items-center gap-6">
             <Link href="/" className="group flex items-center gap-3 text-slate-400 hover:text-slate-600 transition-all text-sm font-bold bg-white px-6 py-3 rounded-full shadow-sm border border-slate-100 hover:border-slate-200">
               <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
