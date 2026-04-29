@@ -26,9 +26,26 @@ export default function AdminDashboardPage() {
 
   const fetchData = async () => {
     setIsLoading(true);
-    // Supabase client dibuat di dalam fungsi, bukan di level komponen
     const supabase = createClient();
     
+    // Check session & profile role
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (!['super_admin', 'admin_dinas'].includes(profile?.role || '')) {
+      router.push('/dashboard');
+      return;
+    }
+
     // Fetch stats
     const { data: allUmkm } = await supabase.from('umkm').select('status_verifikasi');
     if (allUmkm) {

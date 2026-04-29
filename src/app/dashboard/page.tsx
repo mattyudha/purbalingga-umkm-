@@ -11,7 +11,7 @@ import {
 } from 'lucide-react'
 
 export default async function DashboardPage() {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const {
     data: { user },
@@ -76,7 +76,7 @@ export default async function DashboardPage() {
             <div className="space-y-4">
               <h2 className="text-xl font-bold text-slate-800 ml-1">Navigasi Cepat</h2>
               <div className="grid grid-cols-1 gap-4">
-                <Link href="/" className="group">
+                <a href="/" className="group block cursor-pointer">
                   <Card className="border-0 shadow-sm rounded-2xl overflow-hidden hover:shadow-md transition-all hover:ring-2 hover:ring-blue-500/20">
                     <CardContent className="p-6 flex items-center gap-4">
                       <div className="bg-blue-100 text-blue-600 p-3 rounded-xl group-hover:scale-110 transition-transform">
@@ -89,10 +89,10 @@ export default async function DashboardPage() {
                       <ArrowRight size={20} className="text-slate-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
                     </CardContent>
                   </Card>
-                </Link>
+                </a>
 
                 {profile?.role === 'pemilik_umkm' && (
-                  <Link href="/dashboard/umkm/create" className="group">
+                  <a href="/dashboard/umkm/create" className="group block cursor-pointer">
                     <Card className="border-0 shadow-sm rounded-2xl overflow-hidden hover:shadow-md transition-all hover:ring-2 hover:ring-emerald-500/20">
                       <CardContent className="p-6 flex items-center gap-4">
                         <div className="bg-emerald-100 text-emerald-600 p-3 rounded-xl group-hover:scale-110 transition-transform">
@@ -105,11 +105,11 @@ export default async function DashboardPage() {
                         <ArrowRight size={20} className="text-slate-300 group-hover:text-emerald-600 group-hover:translate-x-1 transition-all" />
                       </CardContent>
                     </Card>
-                  </Link>
+                  </a>
                 )}
 
                 {(profile?.role === 'super_admin' || profile?.role === 'admin_dinas') && (
-                  <Link href="/admin" className="group">
+                  <a href="/admin" className="group block cursor-pointer">
                     <Card className="border-0 shadow-sm rounded-2xl overflow-hidden hover:shadow-md transition-all hover:ring-2 hover:ring-indigo-500/20">
                       <CardContent className="p-6 flex items-center gap-4">
                         <div className="bg-indigo-100 text-indigo-600 p-3 rounded-xl group-hover:scale-110 transition-transform">
@@ -122,7 +122,7 @@ export default async function DashboardPage() {
                         <ArrowRight size={20} className="text-slate-300 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all" />
                       </CardContent>
                     </Card>
-                  </Link>
+                  </a>
                 )}
               </div>
             </div>

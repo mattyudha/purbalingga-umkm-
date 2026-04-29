@@ -11,7 +11,7 @@ const ratelimit = new Ratelimit({
   prefix: "@upstash/ratelimit",
 });
 
-export async function proxy(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
   // 1. Rate Limiting Logic
   const currentPath = request.nextUrl.pathname;
 
@@ -82,7 +82,6 @@ export async function proxy(request: NextRequest) {
     }
   )
 
-  // ✅ Hanya 1 network call: verifikasi token JWT (tidak ada DB query)
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -90,13 +89,17 @@ export async function proxy(request: NextRequest) {
   // Protect admin and dashboard routes
   if (currentPath.startsWith('/admin') || currentPath.startsWith('/dashboard')) {
     if (!user) {
-      // Redirect to login if unauthenticated
       return NextResponse.redirect(new URL('/login', request.url))
     }
 
-    // ✅ OPTIMASI: Baca role dari user metadata (sudah ada di JWT, TANPA query DB)
-    // Role disimpan di app_metadata atau user_metadata saat user dibuat/diupdate
-    const role = user.user_metadata?.role as string | undefined;
+    // Ambil role dari profiles karena metadata JWT seringkali tidak sinkron
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    const role = profile?.role;
 
     if (currentPath.startsWith('/admin') && !['super_admin', 'admin_dinas'].includes(role ?? '')) {
        return NextResponse.redirect(new URL('/dashboard', request.url))

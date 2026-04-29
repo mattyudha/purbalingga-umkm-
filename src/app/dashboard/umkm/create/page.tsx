@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import dynamic from 'next/dynamic';
-import { Loader2, ArrowLeft } from 'lucide-react';
+import { Loader2, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 
 const MapPicker = dynamic(() => import('@/components/dashboard/MapPicker'), {
@@ -24,6 +24,7 @@ export default function CreateUmkmPage() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   // Master Data
   const [kategoriList, setKategoriList] = useState<any[]>([]);
@@ -111,9 +112,8 @@ export default function CreateUmkmPage() {
         if (photoError) console.error("Error inserting photo record:", photoError);
       }
 
-      // Success! Redirect to dashboard
-      router.push('/dashboard');
-      router.refresh();
+      // Success! Show popup
+      setShowSuccess(true);
 
     } catch (err: any) {
       setError(err.message || "Terjadi kesalahan sistem");
@@ -160,7 +160,7 @@ export default function CreateUmkmPage() {
 
                   <div className="space-y-2">
                     <Label>Kategori *</Label>
-                    <Select required onValueChange={setKategoriId}>
+                    <Select required onValueChange={(val) => setKategoriId(val || '')}>
                       <SelectTrigger>
                         <SelectValue placeholder="Pilih Kategori" />
                       </SelectTrigger>
@@ -174,7 +174,7 @@ export default function CreateUmkmPage() {
 
                   <div className="space-y-2">
                     <Label>Kecamatan *</Label>
-                    <Select required onValueChange={setKecamatanId}>
+                    <Select required onValueChange={(val) => setKecamatanId(val || '')}>
                       <SelectTrigger>
                         <SelectValue placeholder="Pilih Kecamatan" />
                       </SelectTrigger>
@@ -241,6 +241,30 @@ export default function CreateUmkmPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Success Modal */}
+      {showSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 transition-all">
+          <div className="bg-white rounded-[2rem] p-8 max-w-sm w-full text-center shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6 ring-8 ring-emerald-50/50">
+              <CheckCircle2 size={48} className="text-emerald-500" strokeWidth={1.5} />
+            </div>
+            <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">Pendaftaran Berhasil!</h3>
+            <p className="text-slate-500 mb-8 font-medium leading-relaxed">
+              Selamat, UMKM Anda telah berhasil didaftarkan. Data Anda akan ditinjau oleh tim kami sebelum tampil di Peta Publik.
+            </p>
+            <Button 
+              className="w-full bg-slate-900 hover:bg-blue-600 text-white h-14 text-lg font-bold rounded-2xl transition-all shadow-xl shadow-slate-200"
+              onClick={() => {
+                router.push('/dashboard');
+                router.refresh();
+              }}
+            >
+              Kembali ke Dashboard
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

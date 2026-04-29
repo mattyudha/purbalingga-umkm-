@@ -94,7 +94,7 @@ export default function UserNav() {
           </Button>
         </Link>
         
-        {profile?.role === 'super_admin' && (
+        {['super_admin', 'admin_dinas'].includes(profile?.role) && (
           <Link href="/admin">
             <Button variant="outline" size="icon" className="rounded-full w-9 h-9 border-green-200 text-green-700">
               <ShieldCheck className="w-4 h-4" />

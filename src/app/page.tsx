@@ -35,7 +35,8 @@ export default function Home() {
           kategori_umkm(nama),
           umkm_photos(cloudinary_url)
         `)
-        .eq('status_verifikasi', 'approved');
+        .eq('status_verifikasi', 'approved')
+        .limit(100);
       
       if (!error && data) {
         setUmkmData(data);
