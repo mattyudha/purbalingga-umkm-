@@ -25,15 +25,22 @@ export default function LoginPage() {
     setIsLoading(true);
     setError(null);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      if (!supabase || !supabase.auth) {
+        throw new Error('Supabase client not initialized. Please check your environment variables.');
+      }
 
-    if (error) {
-      setError(error.message);
-      setIsLoading(false);
-    } else {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        setError(error.message);
+        setIsLoading(false);
+        return;
+      }
+
       // Auto-promote admin@gmail.com for initial setup
       if (email === 'admin@gmail.com') {
         const { data: { user } } = await supabase.auth.getUser();
@@ -47,6 +54,10 @@ export default function LoginPage() {
 
       router.push('/dashboard');
       router.refresh();
+    } catch (err: any) {
+      console.error('Login error:', err);
+      setError(err?.message || 'An unexpected error occurred. Please try again.');
+      setIsLoading(false);
     }
   };
 
@@ -56,8 +67,8 @@ export default function LoginPage() {
       <div className="hidden lg:flex lg:w-[55%] relative overflow-hidden bg-slate-900">
         <div className="absolute inset-0 z-0">
           <img
-            src="/purbalingga_map_visual_1777380737454.png"
-            alt="Purbalingga Map Visual"
+            src="/banyumas-map-visual.svg"
+            alt="Banyumas Map Visual"
             className="w-full h-full object-cover opacity-60 scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/40 to-transparent" />
@@ -72,11 +83,11 @@ export default function LoginPage() {
             className="flex items-center gap-4 group cursor-pointer"
           >
             <div className="bg-white/10 backdrop-blur-xl p-2 rounded-2xl border border-white/20 shadow-2xl group-hover:bg-white transition-all duration-300">
-              <img src="/purbalinggalogo.png" alt="Logo" className="w-12 h-12 object-contain" />
+              <img src="/purbalinggalogo.png" alt="Logo Banyumas" className="w-12 h-12 object-contain" />
             </div>
             <div className="flex flex-col">
-              <span className="text-3xl font-black tracking-tighter uppercase leading-none">Purbalingga</span>
-              <span className="text-[10px] font-bold text-blue-400 tracking-[0.3em] uppercase mt-1">GIS Portal Untu UMKM Purbalingga</span>
+              <span className="text-3xl font-black tracking-tighter uppercase leading-none">Banyumas</span>
+              <span className="text-[10px] font-bold text-blue-400 tracking-[0.3em] uppercase mt-1">GIS Portal Untu UMKM Banyumas</span>
             </div>
           </motion.div>
 
@@ -88,11 +99,11 @@ export default function LoginPage() {
             >
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold mb-6 backdrop-blur-sm">
                 <Globe size={14} />
-                <span>Resmi Pemerintah Kabupaten Purbalingga</span>
+                <span>Resmi Pemerintah Kabupaten Banyumas</span>
               </div>
               <h1 className="text-6xl font-black leading-[1.1] mb-8 tracking-tight">
                 Transformasi Digital <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">UMKM Purbalingga.</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">UMKM Banyumas.</span>
               </h1>
               <p className="text-slate-300 text-xl leading-relaxed font-medium mb-10 max-w-lg">
                 Sistem Informasi Geografis terintegrasi untuk pemetaan, analisis, dan pengembangan ekosistem ekonomi kreatif daerah.
@@ -123,7 +134,7 @@ export default function LoginPage() {
           </div>
 
           <div className="text-slate-500 text-sm font-medium">
-            © 2026 Pemerintah Kabupaten Purbalingga • Layanan Digital Terpadu
+            © 2026 Pemerintah Kabupaten Banyumas • Layanan Digital Terpadu
           </div>
         </div>
       </div>
@@ -143,9 +154,9 @@ export default function LoginPage() {
           <div className="lg:hidden flex justify-center mb-12">
             <Link href="/" className="flex flex-col items-center gap-2">
               <div className="bg-blue-600 p-2 rounded-3xl text-white shadow-2xl shadow-blue-500/20">
-                <img src="/purbalinggalogo.png" alt="Logo" className="w-12 h-12 object-contain brightness-0 invert" />
+                <img src="/purbalinggalogo.png" alt="Logo Banyumas" className="w-12 h-12 object-contain brightness-0 invert" />
               </div>
-              <span className="text-2xl font-black tracking-tight text-slate-900 uppercase">Purbalingga</span>
+              <span className="text-2xl font-black tracking-tight text-slate-900 uppercase">Banyumas</span>
             </Link>
           </div>
 
@@ -181,7 +192,7 @@ export default function LoginPage() {
               <div className="space-y-3">
                 <div className="flex items-center justify-between ml-1">
                   <Label htmlFor="password" className="text-slate-800 font-bold text-sm">Kata Sandi</Label>
-                  <Link href="/forgot-password" size="sm" className="text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors">
+                  <Link href="/forgot-password" className="text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors">
                     Lupa Password?
                   </Link>
                 </div>

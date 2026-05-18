@@ -52,7 +52,7 @@ export default async function DashboardPage() {
                 Halo, {profile?.full_name?.split(' ')[0] || 'Pengguna'}!
               </h1>
               <p className="text-slate-500 max-w-lg">
-                Selamat datang di dashboard portal UMKM Purbalingga. Kelola data usaha Anda atau akses panel administrasi di sini.
+                Selamat datang di dashboard portal UMKM Kabupaten Banyumas. Kelola data usaha Anda atau akses panel administrasi di sini.
               </p>
               
               <div className="mt-6 flex flex-wrap gap-3">
@@ -85,7 +85,7 @@ export default async function DashboardPage() {
                       </div>
                       <div className="flex-1">
                         <h3 className="font-bold text-slate-900">Lihat Peta Publik</h3>
-                        <p className="text-sm text-slate-500">Lihat sebaran UMKM di peta Purbalingga.</p>
+                        <p className="text-sm text-slate-500">Lihat sebaran UMKM di peta Banyumas.</p>
                       </div>
                       <ArrowRight size={20} className="text-slate-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
                     </CardContent>
@@ -136,7 +136,7 @@ export default async function DashboardPage() {
 
       <footer className="py-8 px-4 text-center">
         <p className="text-sm text-slate-400 font-medium">
-          © 2026 Pemerintah Kabupaten Purbalingga
+          © 2026 Pemerintah Kabupaten Banyumas
         </p>
       </footer>
     </div>

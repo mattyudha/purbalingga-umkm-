@@ -43,12 +43,12 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-3 group">
             <img 
               src="/purbalinggalogo.png" 
-              alt="Logo Purbalingga" 
+              alt="Logo Banyumas" 
               className="h-10 w-auto object-contain group-hover:scale-105 transition-transform duration-200"
             />
             <div className="flex flex-col">
               <span className="font-heading font-black text-2xl tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-r from-slate-950 via-blue-900 to-slate-900 uppercase">
-                Purbalingga
+                Banyumas
               </span>
               <span className="text-[9px] font-black text-blue-600/80 uppercase tracking-[0.3em] mt-1.5 flex items-center gap-2">
                 <span className="w-8 h-[1px] bg-blue-100" />
@@ -143,7 +143,7 @@ export default function Navbar() {
 
               <div className="p-6 border-t bg-slate-50/50">
                 <p className="text-xs text-slate-400 text-center font-medium">
-                  © 2026 Pemerintah Kabupaten Purbalingga
+                  © 2026 Pemerintah Kabupaten Banyumas
                 </p>
               </div>
             </motion.div>

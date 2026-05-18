@@ -235,7 +235,7 @@ export default function UMKMFormModal({ isOpen, onClose, onSuccess, editingUmkm 
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
                     <div className="space-y-2 min-w-0">
                       <Label className="text-[11px] font-black text-slate-500 uppercase tracking-wider ml-1">Kategori Sektor</Label>
-                      <Select value={formData.kategori_id} onValueChange={val => setFormData({...formData, kategori_id: val})}>
+                      <Select value={formData.kategori_id} onValueChange={(val: string | null) => setFormData({...formData, kategori_id: val || ''})}>
                         <SelectTrigger type="button" className="rounded-2xl border-slate-200 h-13 font-bold bg-slate-50/30 focus:ring-blue-600/10 transition-all w-full">
                           <SelectValue placeholder="Pilih Kategori" />
                         </SelectTrigger>
@@ -246,7 +246,7 @@ export default function UMKMFormModal({ isOpen, onClose, onSuccess, editingUmkm 
                     </div>
                     <div className="space-y-2 min-w-0">
                       <Label className="text-[11px] font-black text-slate-500 uppercase tracking-wider ml-1">Kecamatan / Wilayah</Label>
-                      <Select value={formData.kecamatan_id} onValueChange={val => setFormData({...formData, kecamatan_id: val})}>
+                      <Select value={formData.kecamatan_id} onValueChange={(val: string | null) => setFormData({...formData, kecamatan_id: val || ''})}>
                         <SelectTrigger type="button" className="rounded-2xl border-slate-200 h-13 font-bold bg-slate-50/30 focus:ring-blue-600/10 transition-all w-full">
                           <SelectValue placeholder="Pilih Kecamatan" />
                         </SelectTrigger>
@@ -269,7 +269,7 @@ export default function UMKMFormModal({ isOpen, onClose, onSuccess, editingUmkm 
                     </div>
                     <div className="space-y-2">
                       <Label className="text-[11px] font-black text-slate-500 uppercase tracking-wider ml-1">Status Verifikasi</Label>
-                      <Select value={formData.status_verifikasi} onValueChange={val => setFormData({...formData, status_verifikasi: val})}>
+                      <Select value={formData.status_verifikasi} onValueChange={(val: string | null) => setFormData({...formData, status_verifikasi: val || ''})}>
                         <SelectTrigger type="button" className={cn(
                           "rounded-2xl border-slate-200 h-13 font-black bg-slate-50/30 transition-all",
                           formData.status_verifikasi === 'approved' && "text-emerald-600 bg-emerald-50/30 border-emerald-100",

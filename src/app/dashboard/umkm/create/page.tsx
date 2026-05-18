@@ -160,7 +160,7 @@ export default function CreateUmkmPage() {
 
                   <div className="space-y-2">
                     <Label>Kategori *</Label>
-                    <Select required onValueChange={(val) => setKategoriId(val || '')}>
+                    <Select required onValueChange={(val: string | null) => setKategoriId(val || '')}>
                       <SelectTrigger>
                         <SelectValue placeholder="Pilih Kategori" />
                       </SelectTrigger>
@@ -174,7 +174,7 @@ export default function CreateUmkmPage() {
 
                   <div className="space-y-2">
                     <Label>Kecamatan *</Label>
-                    <Select required onValueChange={(val) => setKecamatanId(val || '')}>
+                    <Select required onValueChange={(val: string | null) => setKecamatanId(val || '')}>
                       <SelectTrigger>
                         <SelectValue placeholder="Pilih Kecamatan" />
                       </SelectTrigger>

@@ -16,7 +16,7 @@ export default async function proxy(request: NextRequest) {
   const currentPath = request.nextUrl.pathname;
 
   if (currentPath.startsWith('/login') || currentPath.startsWith('/register') || currentPath.startsWith('/api')) {
-    const ip = request.ip ?? "127.0.0.1";
+    const ip = (request as any).ip ?? request.headers.get('x-forwarded-for') ?? request.headers.get('x-real-ip') ?? "127.0.0.1";
     try {
       const { success } = await ratelimit.limit(ip);
       if (!success) {

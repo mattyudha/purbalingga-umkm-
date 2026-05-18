@@ -12,12 +12,12 @@ export async function POST(request: Request) {
   try {
     const contentType = request.headers.get('content-type') || '';
     let fileBase64: string;
-    let folder = 'umkm_purbalingga';
+    let folder = 'umkm_banyumas';
 
     if (contentType.includes('application/json')) {
       const body = await request.json();
       fileBase64 = body.file;
-      if (body.folder) folder = `umkm_purbalingga/${body.folder}`;
+      if (body.folder) folder = `umkm_banyumas/${body.folder}`;
     } else {
       const formData = await request.formData();
       const file = formData.get('file') as File;

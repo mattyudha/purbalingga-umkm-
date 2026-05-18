@@ -162,7 +162,7 @@ export default function AdminDashboardPage() {
                 <span>Panel Administrasi</span>
               </div>
               <h1 className="text-4xl font-heading font-black text-slate-900 tracking-tight">Dashboard Admin</h1>
-              <p className="text-slate-500 mt-1">Kelola dan verifikasi data UMKM Kabupaten Purbalingga.</p>
+              <p className="text-slate-500 mt-1">Kelola dan verifikasi data UMKM Kabupaten Banyumas.</p>
             </div>
             <div className="flex gap-3">
                <Button 
@@ -284,7 +284,7 @@ export default function AdminDashboardPage() {
                         </div>
                         
                         <div className="mt-8 pt-6 border-t border-slate-50">
-                           <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">Sistem Informasi Geografis Purbalingga</p>
+                           <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">Sistem Informasi Geografis Banyumas</p>
                         </div>
                      </div>
                    </Card>
@@ -468,7 +468,7 @@ export default function AdminDashboardPage() {
       <footer className="py-8 px-4 border-t bg-white mt-12">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-sm text-slate-400 font-medium italic">
-            Sistem Informasi Geografis UMKM Purbalingga © 2026
+            Sistem Informasi Geografis UMKM Kabupaten Banyumas © 2026
           </p>
         </div>
       </footer>

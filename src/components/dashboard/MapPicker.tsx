@@ -41,7 +41,7 @@ function LocationMarker({ onLocationSelect, initialLocation }: MapPickerProps) {
 }
 
 export default function MapPicker({ onLocationSelect, initialLocation }: MapPickerProps) {
-  const purbalinggaCenter: [number, number] = [-7.33, 109.36];
+  const banyumasCenter: [number, number] = [-7.33, 109.36];
   
   const maxBounds: [[number, number], [number, number]] = [
     [-7.60, 109.15],
@@ -51,7 +51,7 @@ export default function MapPicker({ onLocationSelect, initialLocation }: MapPick
   return (
     <div className="w-full h-[400px] rounded-lg overflow-hidden border border-slate-200">
       <MapContainer
-        center={initialLocation || purbalinggaCenter}
+        center={initialLocation || banyumasCenter}
         zoom={12}
         minZoom={10}
         maxBounds={maxBounds}

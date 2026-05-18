@@ -13,8 +13,8 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Purbalingga UMKM Portal",
-  description: " GIS Portal Untu UMKM Purbalingga",
+  title: "Banyumas UMKM Portal",
+  description: "GIS Portal Untuk UMKM Kabupaten Banyumas",
 };
 
 export default function RootLayout({

@@ -73,7 +73,7 @@ export default function RegisterPage() {
               <div className="space-y-3">
                 <h2 className="text-4xl font-black text-slate-900 tracking-tight">Akun Berhasil Dibuat!</h2>
                 <p className="text-slate-500 text-lg leading-relaxed font-medium">
-                  Selamat datang di ekosistem digital Purbalingga. Langkah terakhir, silakan verifikasi email Anda atau masuk langsung untuk mulai mengelola UMKM.
+                  Selamat datang di ekosistem digital Kabupaten Banyumas. Langkah terakhir, silakan verifikasi email Anda atau masuk langsung untuk mulai mengelola UMKM.
                 </p>
               </div>
               <div className="grid grid-cols-1 w-full gap-4 pt-4">
@@ -97,8 +97,8 @@ export default function RegisterPage() {
       <div className="hidden lg:flex lg:w-[50%] relative overflow-hidden bg-slate-900">
         <div className="absolute inset-0 z-0">
           <img 
-            src="/purbalingga_map_visual_1777380737454.png" 
-            alt="Purbalingga Map Visual" 
+            src="/banyumas-map-visual.svg" 
+            alt="Banyumas Map Visual" 
             className="w-full h-full object-cover opacity-60 scale-110"
           />
           <div className="absolute inset-0 bg-gradient-to-l from-slate-900 via-slate-900/40 to-transparent" />
@@ -111,7 +111,7 @@ export default function RegisterPage() {
               <MapPin size={32} />
             </div>
             <div className="flex flex-col">
-              <span className="text-3xl font-black tracking-tighter uppercase leading-none">Purbalingga</span>
+              <span className="text-3xl font-black tracking-tighter uppercase leading-none">Banyumas</span>
               <span className="text-[10px] font-bold text-blue-400 tracking-[0.3em] uppercase mt-1">Enterprise GIS Portal</span>
             </div>
           </Link>
@@ -127,7 +127,7 @@ export default function RegisterPage() {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-400">Usaha Anda.</span>
               </h1>
               <p className="text-slate-300 text-xl leading-relaxed font-medium mb-12 max-w-md">
-                Bergabunglah dengan ribuan pelaku usaha lainnya di Kabupaten Purbalingga dalam satu platform manajemen terpadu.
+                Bergabunglah dengan ribuan pelaku usaha lainnya di Kabupaten Banyumas dalam satu platform manajemen terpadu.
               </p>
             </motion.div>
             
@@ -154,7 +154,7 @@ export default function RegisterPage() {
           </div>
           
           <div className="text-slate-500 text-sm font-medium">
-            Sistem Pendaftaran Terpadu • Dinas Koperasi & UKM Purbalingga
+            Sistem Pendaftaran Terpadu • Dinas Koperasi & UKM Banyumas
           </div>
         </div>
       </div>
@@ -174,7 +174,7 @@ export default function RegisterPage() {
               <div className="bg-blue-600 p-4 rounded-3xl text-white shadow-2xl">
                 <MapPin size={32} />
               </div>
-              <span className="text-2xl font-black tracking-tight text-slate-900 uppercase">Purbalingga</span>
+              <span className="text-2xl font-black tracking-tight text-slate-900 uppercase">Banyumas</span>
             </Link>
           </div>
 
@@ -216,7 +216,7 @@ export default function RegisterPage() {
               </div>
               
               <div className="space-y-3">
-                <Label htmlFor="password" strokeWidth={1.5} className="text-slate-800 font-bold text-sm ml-1">Kata Sandi Akun</Label>
+                <Label htmlFor="password" className="text-slate-800 font-bold text-sm ml-1">Kata Sandi Akun</Label>
                 <div className="relative group">
                   <Input 
                     id="password" 

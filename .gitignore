@@ -39,3 +39,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Temporary data & scripts
+id3302_banyumas/
+*.sql
+fix-geojson*.js
+create-mask.js
+create-test-accounts.js
+merge-banyumas.js
+banyumas-kabupaten*.geojson
+banyumas-kabupatan*.geojson
+umkm_rows*.sql
+seed-*.sql
+import-banyumas-complete.sql
+public/geojson/id3302_banyumas_merged.json

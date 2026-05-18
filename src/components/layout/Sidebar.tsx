@@ -14,6 +14,8 @@ interface SidebarProps {
   umkmList: any[];
   selectedUmkm: any | null;
   onSelectUmkm: (umkm: any | null) => void;
+  selectedDesa: string | null;
+  onSelectDesa: (desa: string | null) => void;
   isLoading: boolean;
 }
 
@@ -75,7 +77,7 @@ function ImageCarousel({ photos, name }: { photos: any[], name: string }) {
   );
 }
 
-export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, isLoading }: SidebarProps) {
+export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selectedDesa, onSelectDesa, isLoading }: SidebarProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'menu' | 'reviews' | 'about'>('overview');
@@ -86,7 +88,8 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, isLoadin
     const matchesSearch = item.nama_umkm.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           item.kategori_umkm?.nama?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory ? item.kategori_umkm?.nama === selectedCategory : true;
-    return matchesSearch && matchesCategory;
+    const matchesDesa = selectedDesa ? item._desa === selectedDesa : true;
+    return matchesSearch && matchesCategory && matchesDesa;
   });
 
   return (
@@ -137,6 +140,25 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, isLoadin
             </Button>
           ))}
         </div>
+
+        {/* Active Desa Filter Badge */}
+        {selectedDesa && (
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-50 border border-blue-200 text-blue-700">
+              <MapPin size={14} />
+              <span className="text-xs font-bold">Desa {selectedDesa}</span>
+              <button 
+                onClick={() => onSelectDesa(null)}
+                className="ml-1 w-5 h-5 rounded-full hover:bg-blue-200 flex items-center justify-center transition-colors"
+              >
+                <span className="text-xs">×</span>
+              </button>
+            </div>
+            <span className="text-[10px] text-slate-400 font-medium">
+              {filteredList.length} UMKM ditemukan
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="flex-1 relative overflow-hidden">
@@ -266,7 +288,7 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, isLoadin
                 ].map((btn, idx) => (
                   <button key={idx} onClick={btn.action} className="flex flex-col items-center gap-1.5 group">
                     <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center transition-all group-hover:bg-blue-600 group-hover:text-white group-active:scale-90 shadow-sm border border-blue-100/50">
-                      {React.cloneElement(btn.icon as React.ReactElement, { size: 18 })}
+                      {React.cloneElement(btn.icon as React.ReactElement, { size: 18 } as any)}
                     </div>
                     <span className="text-[10px] font-bold text-slate-500 group-hover:text-blue-600">{btn.label}</span>
                   </button>
