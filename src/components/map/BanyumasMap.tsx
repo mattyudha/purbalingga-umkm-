@@ -7,7 +7,8 @@ import simplify from '@turf/simplify';
 
 import { MapContainer, TileLayer, GeoJSON, Marker, Polyline, useMap } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
-import { Plus, Minus, MapPin, Layers, Store, Map, Satellite, Mountain, Check, Search, Navigation, X, BarChart3, TrendingUp, Building2, Filter, Route, Eye, EyeOff } from 'lucide-react';
+import { Plus, Minus, MapPin, Layers, Store, Map, Satellite, Mountain, Check, Search, Navigation, X, BarChart3, TrendingUp, Building2, Filter, Route, Eye, EyeOff, Settings2, ChevronLeft } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface BanyumasMapProps {
   geoJsonData: any;
@@ -310,7 +311,7 @@ function MapLegend() {
 
 function MapInfoBadge() {
   return (
-    <div className="absolute top-20 left-4 sm:top-4 sm:left-4 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-slate-200 px-3 sm:px-4 py-2 sm:py-3 transition-all">
+    <div className="hidden sm:block absolute top-20 left-4 sm:top-4 sm:left-4 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-slate-200 px-3 sm:px-4 py-2 sm:py-3 transition-all">
       <div className="flex items-center gap-2">
         <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
           <MapPin size={16} className="text-blue-600" />
@@ -324,120 +325,214 @@ function MapInfoBadge() {
   );
 }
 
-function CategoryLayerToggle({ umkmData, activeCategories, onChange }: { umkmData: any[]; activeCategories: Set<string>; onChange: (cats: Set<string>) => void }) {
-  const categories = useMemo(() => {
-    const cats = Array.from(new Set(umkmData.map((u) => u.kategori_umkm?.nama).filter(Boolean)));
-    return cats;
-  }, [umkmData]);
-
+function MapControlMenu({
+  activeLayer,
+  setActiveLayer,
+  umkmData,
+  activeCategories,
+  setActiveCategories,
+  showTourRoute,
+  setShowTourRoute,
+  isCleanMode,
+  onToggleCleanMode
+}: {
+  activeLayer: MapLayerType;
+  setActiveLayer: (layer: MapLayerType) => void;
+  umkmData: any[];
+  activeCategories: Set<string>;
+  setActiveCategories: (cats: Set<string>) => void;
+  showTourRoute: boolean;
+  setShowTourRoute: (show: boolean) => void;
+  isCleanMode?: boolean;
+  onToggleCleanMode?: () => void;
+}) {
   const [isOpen, setIsOpen] = useState(false);
+  const [view, setView] = useState<'main' | 'layer' | 'category'>('main');
+
+  const categories = useMemo(() => {
+    return Array.from(new Set(umkmData.map((u) => u.kategori_umkm?.nama).filter(Boolean)));
+  }, [umkmData]);
 
   const toggleCategory = (cat: string) => {
     const next = new Set(activeCategories);
-    if (next.has(cat)) {
-      next.delete(cat);
-    } else {
-      next.add(cat);
-    }
-    onChange(next);
+    if (next.has(cat)) next.delete(cat);
+    else next.add(cat);
+    setActiveCategories(next);
   };
 
-  const clearAll = () => onChange(new Set());
+  const closeMenu = () => {
+    setIsOpen(false);
+    setTimeout(() => setView('main'), 300);
+  };
 
   return (
-    <div className="absolute top-20 right-4 sm:top-28 sm:right-4 z-[1000] transition-all">
-      <div className="relative">
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className={`flex items-center gap-2 px-3 py-2.5 rounded-xl shadow-lg border transition-all duration-200 ${
-            isOpen || activeCategories.size > 0
-              ? 'bg-emerald-600 border-emerald-500 text-white shadow-emerald-500/25'
-              : 'bg-white/95 backdrop-blur-sm border-slate-200 text-slate-700 hover:border-emerald-300 hover:shadow-xl'
-          }`}
-          title="Filter kategori UMKM"
-        >
-          <Filter size={16} strokeWidth={2.5} />
-          <span className="text-xs font-bold hidden sm:inline">
-            {activeCategories.size > 0 ? `${activeCategories.size} Kategori` : 'Kategori'}
-          </span>
-          <Store size={14} strokeWidth={2.5} className="opacity-70" />
-        </button>
+    <div className="absolute top-[5.5rem] right-4 sm:top-20 sm:right-4 z-[1000] transition-all">
+      {/* Trigger Button */}
+      <button
+        onClick={() => {
+          if (isOpen) closeMenu();
+          else setIsOpen(true);
+        }}
+        className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-xl border-2 backdrop-blur-md ${
+          isOpen ? 'bg-slate-900 border-slate-700 text-white shadow-slate-900/30' : 'bg-white/95 border-slate-200 text-slate-700 hover:bg-slate-50'
+        }`}
+        title="Pengaturan Peta"
+      >
+        <Settings2 size={24} strokeWidth={2.5} className={isOpen ? 'rotate-90 transition-transform duration-300' : 'transition-transform duration-300'} />
+      </button>
 
+      {/* Assistive Menu Overlay */}
+      <AnimatePresence>
         {isOpen && (
           <>
-            <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
-            <div className="absolute right-0 mt-2 w-56 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200/80 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
-              <div className="px-4 py-3 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center">
-                    <Filter size={14} className="text-emerald-600" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-slate-800">Filter Kategori</h4>
-                    <p className="text-[10px] text-slate-500">Tampilkan/Sembunyikan UMKM</p>
-                  </div>
-                </div>
-                {activeCategories.size > 0 && (
-                  <button
-                    onClick={clearAll}
-                    className="text-[10px] font-bold text-emerald-600 hover:text-emerald-700 px-2 py-1 rounded-lg hover:bg-emerald-50 transition-colors"
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }} 
+              className="fixed inset-0 z-40 bg-slate-900/20 md:bg-transparent"
+              onClick={closeMenu}
+            />
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: -20, x: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: -20, x: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="absolute right-0 top-16 w-[280px] bg-slate-900/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/10 overflow-hidden z-50 text-white"
+            >
+              <AnimatePresence mode="wait">
+                {view === 'main' && (
+                  <motion.div 
+                    key="main"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.2 }}
+                    className="p-4"
                   >
-                    Reset
-                  </button>
-                )}
-              </div>
-              <div className="p-2 space-y-1">
-                {categories.map((cat) => {
-                  const isActive = activeCategories.has(cat);
-                  return (
-                    <button
-                      key={cat}
-                      onClick={() => toggleCategory(cat)}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-left ${
-                        isActive
-                          ? 'bg-emerald-50 border border-emerald-200 shadow-sm'
-                          : 'hover:bg-slate-50 border border-transparent'
-                      }`}
-                    >
-                      <div
-                        className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                          isActive ? 'border-emerald-500 bg-emerald-500' : 'border-slate-300'
-                        }`}
+                    <div className="grid grid-cols-2 gap-3">
+                      {/* Lapisan Peta */}
+                      <button onClick={() => setView('layer')} className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors">
+                        <Layers size={24} className="text-blue-400" />
+                        <span className="text-[11px] font-bold">Lapisan Peta</span>
+                      </button>
+
+                      {/* Kategori */}
+                      <button onClick={() => setView('category')} className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors relative">
+                        {activeCategories.size > 0 && (
+                          <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                        )}
+                        <Filter size={24} className="text-emerald-400" />
+                        <span className="text-[11px] font-bold">Filter UMKM</span>
+                      </button>
+
+                      {/* Rute Wisata */}
+                      <button 
+                        onClick={() => { setShowTourRoute(!showTourRoute); closeMenu(); }} 
+                        className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl transition-colors ${showTourRoute ? 'bg-amber-500/20 text-amber-300' : 'bg-white/5 hover:bg-white/10'}`}
                       >
-                        {isActive && <Check size={10} className="text-white" strokeWidth={3} />}
+                        <Route size={24} className={showTourRoute ? 'text-amber-400' : 'text-amber-400/50'} />
+                        <span className="text-[11px] font-bold">Rute Wisata</span>
+                      </button>
+
+                      {/* Zen Mode */}
+                      <button 
+                        onClick={() => { if (onToggleCleanMode) onToggleCleanMode(); closeMenu(); }} 
+                        className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl transition-colors ${isCleanMode ? 'bg-blue-500/20 text-blue-300' : 'bg-white/5 hover:bg-white/10'}`}
+                      >
+                        {isCleanMode ? <Eye size={24} className="text-blue-400" /> : <EyeOff size={24} className="text-slate-400" />}
+                        <span className="text-[11px] font-bold">Peta Penuh</span>
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+
+                {view === 'layer' && (
+                  <motion.div 
+                    key="layer"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <div className="flex items-center gap-2 p-4 border-b border-white/10">
+                      <button onClick={() => setView('main')} className="p-1 rounded-full hover:bg-white/10 transition-colors">
+                        <ChevronLeft size={18} />
+                      </button>
+                      <span className="font-bold text-sm tracking-wide">Lapisan Peta</span>
+                    </div>
+                    <div className="p-3 space-y-2">
+                      {mapLayers.map((l) => (
+                        <button
+                          key={l.id}
+                          onClick={() => { setActiveLayer(l.id); closeMenu(); }}
+                          className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${
+                            activeLayer === l.id ? 'bg-blue-500/20 border border-blue-500/30' : 'hover:bg-white/5 border border-transparent'
+                          }`}
+                        >
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br ${l.previewGradient} shadow-inner`}>
+                            <l.icon size={16} className="text-slate-800" strokeWidth={2.5} />
+                          </div>
+                          <div className="text-left flex-1">
+                            <h5 className={`text-xs font-bold ${activeLayer === l.id ? 'text-blue-400' : 'text-slate-200'}`}>{l.name}</h5>
+                            <p className="text-[9px] text-slate-400 mt-0.5">{l.description}</p>
+                          </div>
+                          {activeLayer === l.id && <Check size={16} className="text-blue-400" strokeWidth={3} />}
+                        </button>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
+                {view === 'category' && (
+                  <motion.div 
+                    key="category"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <div className="flex items-center justify-between p-4 border-b border-white/10">
+                      <div className="flex items-center gap-2">
+                        <button onClick={() => setView('main')} className="p-1 rounded-full hover:bg-white/10 transition-colors">
+                          <ChevronLeft size={18} />
+                        </button>
+                        <span className="font-bold text-sm tracking-wide">Filter UMKM</span>
                       </div>
-                      <span className={`text-xs font-bold ${isActive ? 'text-emerald-700' : 'text-slate-700'}`}>
-                        {cat}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+                      {activeCategories.size > 0 && (
+                        <button onClick={() => setActiveCategories(new Set())} className="text-[10px] font-bold px-2 py-1 bg-emerald-500/20 text-emerald-400 rounded-md hover:bg-emerald-500/30 transition-colors">
+                          Reset
+                        </button>
+                      )}
+                    </div>
+                    <div className="p-3 space-y-1 max-h-[300px] overflow-y-auto custom-scrollbar">
+                      {categories.map((cat) => {
+                        const isActive = activeCategories.has(cat);
+                        return (
+                          <button
+                            key={cat}
+                            onClick={() => toggleCategory(cat)}
+                            className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${
+                              isActive ? 'bg-emerald-500/20 border border-emerald-500/30' : 'hover:bg-white/5 border border-transparent'
+                            }`}
+                          >
+                            <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors ${
+                              isActive ? 'border-emerald-500 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]' : 'border-slate-500'
+                            }`}>
+                              {isActive && <Check size={10} className="text-white" strokeWidth={3} />}
+                            </div>
+                            <span className={`text-xs font-bold ${isActive ? 'text-emerald-400' : 'text-slate-300'}`}>{cat}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           </>
         )}
-      </div>
-    </div>
-  );
-}
-
-function TourRouteButton({ showTourRoute, onToggle }: { showTourRoute: boolean; onToggle: () => void }) {
-  return (
-    <div className="absolute top-[9rem] right-4 sm:top-40 sm:right-4 z-[1000] transition-all">
-      <button
-        onClick={onToggle}
-        className={`flex items-center gap-2 px-3 py-2.5 rounded-xl shadow-lg border transition-all duration-200 ${
-          showTourRoute
-            ? 'bg-amber-500 border-amber-400 text-white shadow-amber-500/25'
-            : 'bg-white/95 backdrop-blur-sm border-slate-200 text-slate-700 hover:border-amber-300 hover:shadow-xl'
-        }`}
-        title="Rute Wisata UMKM"
-      >
-        <Route size={16} strokeWidth={2.5} />
-        <span className="text-xs font-bold hidden sm:inline">
-          {showTourRoute ? 'Sembunyikan Rute' : 'Rute Wisata'}
-        </span>
-      </button>
+      </AnimatePresence>
     </div>
   );
 }
@@ -602,110 +697,6 @@ const mapLayers: MapLayerOption[] = [
   },
 ];
 
-function LayerSwitcher({ activeLayer, onChange }: { activeLayer: MapLayerType; onChange: (layer: MapLayerType) => void }) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const currentLayer = mapLayers.find((l) => l.id === activeLayer)!;
-
-  return (
-    <div className="absolute top-[5.5rem] right-4 sm:top-16 sm:right-4 z-[1000] hidden sm:block transition-all">
-      <div className="relative">
-        {/* Toggle Button */}
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className={`flex items-center gap-2 px-3 py-2.5 rounded-xl shadow-lg border transition-all duration-200 ${
-            isOpen
-              ? 'bg-blue-600 border-blue-500 text-white shadow-blue-500/25'
-              : 'bg-white/95 backdrop-blur-sm border-slate-200 text-slate-700 hover:border-blue-300 hover:shadow-xl'
-          }`}
-          title="Ganti lapisan peta"
-        >
-          <currentLayer.icon size={16} strokeWidth={2.5} />
-          <span className="text-xs font-bold hidden sm:inline">{currentLayer.name}</span>
-          <Layers size={14} strokeWidth={2.5} className="opacity-70" />
-        </button>
-
-        {/* Dropdown Panel */}
-        {isOpen && (
-          <>
-            <div
-              className="fixed inset-0 z-40"
-              onClick={() => setIsOpen(false)}
-            />
-            <div className="absolute right-0 mt-2 w-64 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200/80 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
-              {/* Header */}
-              <div className="px-4 py-3 border-b border-slate-100 bg-slate-50/50">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center">
-                    <Layers size={14} className="text-blue-600" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-slate-800">Lapisan Peta</h4>
-                    <p className="text-[10px] text-slate-500">Pilih tampilan peta</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Layer Options */}
-              <div className="p-2 space-y-1">
-                {mapLayers.map((layer) => {
-                  const isActive = activeLayer === layer.id;
-                  const Icon = layer.icon;
-                  return (
-                    <button
-                      key={layer.id}
-                      onClick={() => {
-                        onChange(layer.id);
-                        setIsOpen(false);
-                      }}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group ${
-                        isActive
-                          ? 'bg-blue-50 border border-blue-200 shadow-sm'
-                          : 'hover:bg-slate-50 border border-transparent'
-                      }`}
-                    >
-                      {/* Preview Thumbnail */}
-                      <div
-                        className={`w-10 h-10 rounded-lg bg-gradient-to-br ${layer.previewGradient} flex items-center justify-center shadow-sm flex-shrink-0`}
-                      >
-                        <Icon
-                          size={18}
-                          className={`${
-                            isActive ? 'text-blue-600' : 'text-slate-500'
-                          } drop-shadow-sm`}
-                          strokeWidth={2}
-                        />
-                      </div>
-
-                      {/* Info */}
-                      <div className="flex-1 text-left">
-                        <div className="flex items-center gap-1.5">
-                          <span
-                            className={`text-xs font-bold ${
-                              isActive ? 'text-blue-700' : 'text-slate-700'
-                            }`}
-                          >
-                            {layer.name}
-                          </span>
-                          {isActive && (
-                            <span className="flex items-center justify-center w-4 h-4 rounded-full bg-blue-600">
-                              <Check size={10} className="text-white" strokeWidth={3} />
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-[10px] text-slate-500 mt-0.5">{layer.description}</p>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
 
 export default function BanyumasMap({ geoJsonData, outlineData, maskData, villageData, umkmData, selectedUmkm, onSelectUmkm, selectedDesa, onSelectDesa, isCleanMode, onToggleCleanMode }: BanyumasMapProps) {
   const banyumasCenter: [number, number] = [-7.41, 109.23];
@@ -752,29 +743,24 @@ export default function BanyumasMap({ geoJsonData, outlineData, maskData, villag
       {!isCleanMode && (
         <>
           <SearchKecamatan geoJsonData={geoJsonData} villageData={villageData} onSelectFeature={setTargetFeature} onSelectDesa={onSelectDesa} />
-          <LayerSwitcher activeLayer={activeLayer} onChange={setActiveLayer} />
-          <CategoryLayerToggle umkmData={umkmData} activeCategories={activeCategories} onChange={setActiveCategories} />
-          <TourRouteButton showTourRoute={showTourRoute} onToggle={() => setShowTourRoute(!showTourRoute)} />
           <MapLegend />
           <MapInfoBadge />
           <MapStatsWidget umkmData={umkmData} selectedDesa={selectedDesa} />
         </>
       )}
 
-      {/* Clean Mode Toggle Button */}
-      {onToggleCleanMode && (
-        <button
-          onClick={onToggleCleanMode}
-          className={`absolute z-[1000] w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 shadow-lg border ${
-            isCleanMode 
-              ? 'top-4 right-4 bg-blue-600 border-blue-500 text-white shadow-blue-500/30' 
-              : 'bottom-[170px] right-2 sm:bottom-[104px] sm:right-4 bg-white backdrop-blur-sm border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-          }`}
-          title={isCleanMode ? "Tampilkan Antarmuka" : "Sembunyikan Antarmuka (Peta Penuh)"}
-        >
-          {isCleanMode ? <Eye size={18} strokeWidth={2.5} /> : <EyeOff size={18} strokeWidth={2.5} />}
-        </button>
-      )}
+      {/* Assistive Map Control Menu (Always visible so user can exit Clean Mode) */}
+      <MapControlMenu 
+        activeLayer={activeLayer}
+        setActiveLayer={setActiveLayer}
+        umkmData={umkmData}
+        activeCategories={activeCategories}
+        setActiveCategories={setActiveCategories}
+        showTourRoute={showTourRoute}
+        setShowTourRoute={setShowTourRoute}
+        isCleanMode={isCleanMode}
+        onToggleCleanMode={onToggleCleanMode}
+      />
 
       <MapContainer
         center={banyumasCenter}
