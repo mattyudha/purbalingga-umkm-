@@ -767,8 +767,8 @@ export default function BanyumasMap({ geoJsonData, outlineData, maskData, villag
           onClick={onToggleCleanMode}
           className={`absolute z-[1000] w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 shadow-lg border ${
             isCleanMode 
-              ? 'top-4 right-4 bg-white/95 backdrop-blur-sm border-slate-200 text-slate-700 hover:border-blue-300 hover:shadow-xl' 
-              : 'top-[4.5rem] right-4 sm:top-[7.5rem] sm:right-4 bg-white/95 backdrop-blur-sm border-slate-200 text-slate-500 hover:text-slate-700 hover:border-blue-300'
+              ? 'top-4 right-4 bg-blue-600 border-blue-500 text-white shadow-blue-500/30' 
+              : 'bottom-[170px] right-2 sm:bottom-[104px] sm:right-4 bg-white backdrop-blur-sm border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900'
           }`}
           title={isCleanMode ? "Tampilkan Antarmuka" : "Sembunyikan Antarmuka (Peta Penuh)"}
         >
