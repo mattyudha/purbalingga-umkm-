@@ -83,6 +83,42 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
   const [activeTab, setActiveTab] = useState<'overview' | 'menu' | 'reviews' | 'about'>('overview');
   const [isMobileSheetOpen, setIsMobileSheetOpen] = useState(false);
 
+  // Swipe-to-close handlers
+  const [touchStartClientY, setTouchStartClientY] = useState<number | null>(null);
+  const scrollAreaRef = React.useRef<HTMLDivElement>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    // Determine if the scroll container is at the top
+    let isAtTop = true;
+    if (scrollAreaRef.current) {
+      const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (viewport && viewport.scrollTop > 0) {
+        isAtTop = false;
+      }
+    }
+    
+    if (isAtTop) {
+      setTouchStartClientY(e.targetTouches[0].clientY);
+    } else {
+      setTouchStartClientY(null);
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartClientY === null) return;
+    const touchEndClientY = e.changedTouches[0].clientY;
+    const distance = touchEndClientY - touchStartClientY;
+    
+    // If swiped down by more than 80px while at the top
+    if (distance > 80) {
+      setIsMobileSheetOpen(false);
+      if (selectedUmkm) {
+        onSelectUmkm(null); // Clear selected UMKM so it doesn't auto-reopen
+      }
+    }
+    setTouchStartClientY(null);
+  };
+
   // Auto open sheet when an UMKM is selected
   React.useEffect(() => {
     if (selectedUmkm) {
@@ -101,7 +137,18 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
   });
 
   return (
-    <div className={`flex flex-col bg-slate-50/95 md:bg-slate-50/80 backdrop-blur-xl md:backdrop-blur-none border-r border-slate-200/60 shadow-[0_-10px_40px_rgba(0,0,0,0.15)] md:shadow-[0_0_80px_rgba(0,0,0,0.03)] absolute md:relative z-20 w-full md:w-[420px] shrink-0 overflow-hidden transition-all duration-500 ease-in-out ${isMobileSheetOpen ? 'h-[85vh] bottom-0 rounded-t-3xl' : 'h-[100px] bottom-0 rounded-t-3xl'} md:h-full md:rounded-none md:bottom-auto`}>
+    <>
+      {/* Mobile Backdrop */}
+      <div 
+        className={`md:hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-10 transition-opacity duration-500 ${isMobileSheetOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        onClick={() => setIsMobileSheetOpen(false)}
+      />
+
+      <div 
+        className={`flex flex-col bg-slate-50/95 md:bg-slate-50/80 backdrop-blur-xl md:backdrop-blur-none border-r border-slate-200/60 shadow-[0_-10px_40px_rgba(0,0,0,0.15)] md:shadow-[0_0_80px_rgba(0,0,0,0.03)] absolute md:relative z-20 w-full md:w-[420px] shrink-0 overflow-hidden transition-all duration-500 ease-in-out ${isMobileSheetOpen ? 'h-[90dvh] bottom-0 rounded-t-[2.5rem]' : 'h-[100px] bottom-0 rounded-t-[2.5rem]'} md:h-full md:rounded-none md:bottom-auto`}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
       {/* Mobile Handle */}
       <div 
         className="md:hidden flex flex-col items-center justify-center pt-4 pb-2 cursor-pointer bg-transparent relative z-40 shrink-0"
@@ -181,7 +228,7 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
       </div>
 
       <div className={`flex-1 relative overflow-hidden transition-opacity duration-300 ${!isMobileSheetOpen ? 'md:opacity-100 opacity-0 pointer-events-none md:pointer-events-auto hidden md:block' : ''}`}>
-        <ScrollArea className="h-full">
+        <ScrollArea className="h-full" ref={scrollAreaRef}>
           <div className="p-5 pb-10 space-y-3">
             {isLoading ? (
               [1, 2, 3].map(i => (
@@ -255,185 +302,188 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
               transition={{ type: 'spring', damping: 30, stiffness: 250 }}
               className="absolute inset-0 bg-white z-40 flex flex-col shadow-[-20px_0_60px_rgba(0,0,0,0.05)] overflow-hidden"
             >
-              {/* Header Image & Back Button */}
-              <div className="relative h-64 shrink-0 z-10">
-                <ImageCarousel photos={selectedUmkm.umkm_photos} name={selectedUmkm.nama_umkm} />
-                <div className="absolute top-6 left-6 flex items-center gap-3">
-                  <Button 
-                    variant="secondary" 
-                    size="icon" 
-                    className="rounded-full shadow-2xl bg-white/95 backdrop-blur-md hover:bg-white text-slate-900 border-none w-10 h-10 transition-all active:scale-90"
-                    onClick={() => onSelectUmkm(null)}
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                  </Button>
-                </div>
-                <div className="absolute top-6 right-6">
-                  <div className="bg-white/95 backdrop-blur-md p-2 rounded-full shadow-2xl">
-                    <CheckCircle2 size={20} className="text-blue-600" />
+              {/* Scrollable Area containing everything except footer */}
+              <ScrollArea className="flex-1" ref={scrollAreaRef}>
+                <div className="flex flex-col min-h-full pb-6">
+                  {/* Header Image & Back Button */}
+                  <div className="relative h-64 shrink-0 z-10">
+                    <ImageCarousel photos={selectedUmkm.umkm_photos} name={selectedUmkm.nama_umkm} />
+                    <div className="absolute top-6 left-6 flex items-center gap-3">
+                      <Button 
+                        variant="secondary" 
+                        size="icon" 
+                        className="rounded-full shadow-2xl bg-white/95 backdrop-blur-md hover:bg-white text-slate-900 border-none w-10 h-10 transition-all active:scale-90"
+                        onClick={() => onSelectUmkm(null)}
+                      >
+                        <ChevronLeft className="w-5 h-5" />
+                      </Button>
+                    </div>
+                    <div className="absolute top-6 right-6">
+                      <div className="bg-white/95 backdrop-blur-md p-2 rounded-full shadow-2xl">
+                        <CheckCircle2 size={20} className="text-blue-600" />
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
 
-              {/* Title & Info Section */}
-              <div className="px-6 py-5 bg-white border-b border-slate-100">
-                <h2 className="text-2xl font-heading font-black text-slate-900 tracking-tight leading-tight mb-2">{selectedUmkm.nama_umkm}</h2>
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-sm font-bold text-amber-500">{selectedUmkm.rating_avg || 4.5}</span>
-                  <div className="flex gap-0.5">
-                    {[1, 2, 3, 4, 5].map(i => (
-                      <span key={i} className={`text-sm ${i <= Math.floor(selectedUmkm.rating_avg || 4.5) ? 'text-amber-400' : 'text-slate-200'}`}>★</span>
+                  {/* Title & Info Section */}
+                  <div className="px-6 py-5 bg-white border-b border-slate-100 shrink-0">
+                    <h2 className="text-2xl font-heading font-black text-slate-900 tracking-tight leading-tight mb-2">{selectedUmkm.nama_umkm}</h2>
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-sm font-bold text-amber-500">{selectedUmkm.rating_avg || 4.5}</span>
+                      <div className="flex gap-0.5">
+                        {[1, 2, 3, 4, 5].map(i => (
+                          <span key={i} className={`text-sm ${i <= Math.floor(selectedUmkm.rating_avg || 4.5) ? 'text-amber-400' : 'text-slate-200'}`}>★</span>
+                        ))}
+                      </div>
+                      <span className="text-xs font-bold text-slate-400">({selectedUmkm.review_count || 0}) • {selectedUmkm.price_range || 'Rp 10.000 - Rp 50.000'}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
+                      <span className="text-blue-600">{selectedUmkm.kategori_umkm?.nama}</span>
+                      <span className="text-slate-300">•</span>
+                      <div className="flex items-center gap-1 text-emerald-600">
+                        <Globe size={12} /> Terbuka untuk umum
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons Row */}
+                  <div className="flex justify-between px-6 py-4 border-b border-slate-50 shrink-0">
+                    {[
+                      { icon: <MapPin />, label: 'Rute', action: () => window.open(`https://www.google.com/maps/dir/?api=1&destination=${selectedUmkm.latitude},${selectedUmkm.longitude}`, '_blank') },
+                      { icon: <ShieldCheck />, label: 'Simpan', action: () => {} },
+                      { icon: <Globe />, label: 'Sekitar', action: () => {} },
+                      { icon: <Phone />, label: 'Hubungi', action: () => selectedUmkm.whatsapp && window.open(`https://wa.me/${selectedUmkm.whatsapp}`, '_blank') },
+                      { icon: <Info />, label: 'Bagikan', action: () => {} }
+                    ].map((btn, idx) => (
+                      <button key={idx} onClick={btn.action} className="flex flex-col items-center gap-1.5 group">
+                        <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center transition-all group-hover:bg-blue-600 group-hover:text-white group-active:scale-90 shadow-sm border border-blue-100/50">
+                          {React.cloneElement(btn.icon as React.ReactElement, { size: 18 } as any)}
+                        </div>
+                        <span className="text-[10px] font-bold text-slate-500 group-hover:text-blue-600">{btn.label}</span>
+                      </button>
                     ))}
                   </div>
-                  <span className="text-xs font-bold text-slate-400">({selectedUmkm.review_count || 0}) • {selectedUmkm.price_range || 'Rp 10.000 - Rp 50.000'}</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
-                  <span className="text-blue-600">{selectedUmkm.kategori_umkm?.nama}</span>
-                  <span className="text-slate-300">•</span>
-                  <div className="flex items-center gap-1 text-emerald-600">
-                    <Globe size={12} /> Terbuka untuk umum
+
+                  {/* Tabs Navigation (Sticky) */}
+                  <div className="flex px-6 border-b border-slate-100 overflow-x-auto no-scrollbar bg-white/95 backdrop-blur-md sticky top-0 z-20 shrink-0 shadow-sm">
+                    {['overview', 'menu', 'reviews', 'about'].map((tab) => (
+                      <button
+                        key={tab}
+                        onClick={() => setActiveTab(tab as any)}
+                        className={`py-4 px-4 text-xs font-black uppercase tracking-widest relative whitespace-nowrap transition-colors ${activeTab === tab ? 'text-blue-600' : 'text-slate-400 hover:text-slate-600'}`}
+                      >
+                        {tab}
+                        {activeTab === tab && (
+                          <motion.div layoutId="activeTabLine" className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
+                        )}
+                      </button>
+                    ))}
                   </div>
-                </div>
-              </div>
 
-              {/* Action Buttons Row */}
-              <div className="flex justify-between px-6 py-4 border-b border-slate-50">
-                {[
-                  { icon: <MapPin />, label: 'Rute', action: () => window.open(`https://www.google.com/maps/dir/?api=1&destination=${selectedUmkm.latitude},${selectedUmkm.longitude}`, '_blank') },
-                  { icon: <ShieldCheck />, label: 'Simpan', action: () => {} },
-                  { icon: <Globe />, label: 'Sekitar', action: () => {} },
-                  { icon: <Phone />, label: 'Hubungi', action: () => selectedUmkm.whatsapp && window.open(`https://wa.me/${selectedUmkm.whatsapp}`, '_blank') },
-                  { icon: <Info />, label: 'Bagikan', action: () => {} }
-                ].map((btn, idx) => (
-                  <button key={idx} onClick={btn.action} className="flex flex-col items-center gap-1.5 group">
-                    <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center transition-all group-hover:bg-blue-600 group-hover:text-white group-active:scale-90 shadow-sm border border-blue-100/50">
-                      {React.cloneElement(btn.icon as React.ReactElement, { size: 18 } as any)}
-                    </div>
-                    <span className="text-[10px] font-bold text-slate-500 group-hover:text-blue-600">{btn.label}</span>
-                  </button>
-                ))}
-              </div>
-
-              {/* Tabs Navigation */}
-              <div className="flex px-6 border-b border-slate-100 overflow-x-auto no-scrollbar bg-white">
-                {['overview', 'menu', 'reviews', 'about'].map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveTab(tab as any)}
-                    className={`py-4 px-4 text-xs font-black uppercase tracking-widest relative whitespace-nowrap transition-colors ${activeTab === tab ? 'text-blue-600' : 'text-slate-400 hover:text-slate-600'}`}
-                  >
-                    {tab}
-                    {activeTab === tab && (
-                      <motion.div layoutId="activeTabLine" className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
-                    )}
-                  </button>
-                ))}
-              </div>
-
-              {/* Tab Content */}
-              <ScrollArea className="flex-1">
-                <div className="p-6">
-                  {activeTab === 'overview' && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
-                      <div className="flex items-start gap-4 p-4 rounded-2xl bg-emerald-50/50 border border-emerald-100/50">
-                        <CheckCircle2 className="text-emerald-500 shrink-0 mt-0.5" size={18} />
-                        <div className="space-y-1">
-                           <p className="text-sm font-bold text-emerald-800">Dine-in • Takeaway • Delivery</p>
-                           <p className="text-xs text-emerald-600/80 font-semibold">Tersedia untuk semua layanan hari ini</p>
-                        </div>
-                      </div>
-
-                      <div className="space-y-6">
-                        <div className="flex gap-4">
-                          <MapPin className="text-blue-600 shrink-0" size={20} />
-                          <p className="text-sm font-semibold text-slate-700 leading-relaxed">{selectedUmkm.alamat}</p>
-                        </div>
-                        <div className="flex gap-4 items-center">
-                          <Clock className="text-blue-600 shrink-0" size={20} />
-                          <div>
-                            <p className="text-sm font-bold text-amber-600">Akan Tutup • {selectedUmkm.jam_operasional?.tutup || '16:00'}</p>
-                            <p className="text-xs font-semibold text-slate-400">{selectedUmkm.jam_operasional?.hari || 'Senin - Minggu'}</p>
+                  {/* Tab Content */}
+                  <div className="p-6">
+                    {activeTab === 'overview' && (
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+                        <div className="flex items-start gap-4 p-4 rounded-2xl bg-emerald-50/50 border border-emerald-100/50">
+                          <CheckCircle2 className="text-emerald-500 shrink-0 mt-0.5" size={18} />
+                          <div className="space-y-1">
+                             <p className="text-sm font-bold text-emerald-800">Dine-in • Takeaway • Delivery</p>
+                             <p className="text-xs text-emerald-600/80 font-semibold">Tersedia untuk semua layanan hari ini</p>
                           </div>
                         </div>
-                        <div className="flex gap-4">
-                          <Store className="text-blue-600 shrink-0" size={20} />
-                          <p className="text-sm font-semibold text-slate-700">{selectedUmkm.price_range || 'Rp 10.000 - Rp 50.000'} per orang</p>
-                        </div>
-                        <div className="flex gap-4">
-                          <Phone className="text-blue-600 shrink-0" size={20} />
-                          <p className="text-sm font-semibold text-slate-700">{selectedUmkm.whatsapp || '-'}</p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
 
-                  {activeTab === 'menu' && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
-                      {selectedUmkm.menu_items && selectedUmkm.menu_items.length > 0 ? (
-                        selectedUmkm.menu_items.map((item: any) => (
-                          <div key={item.id} className="flex justify-between items-center p-4 rounded-2xl border border-slate-100 bg-slate-50/30">
+                        <div className="space-y-6">
+                          <div className="flex gap-4">
+                            <MapPin className="text-blue-600 shrink-0" size={20} />
+                            <p className="text-sm font-semibold text-slate-700 leading-relaxed">{selectedUmkm.alamat}</p>
+                          </div>
+                          <div className="flex gap-4 items-center">
+                            <Clock className="text-blue-600 shrink-0" size={20} />
                             <div>
-                              <h4 className="font-bold text-slate-900">{item.nama}</h4>
-                              <p className="text-xs text-slate-500 mt-1">{item.deskripsi}</p>
+                              <p className="text-sm font-bold text-amber-600">Akan Tutup • {selectedUmkm.jam_operasional?.tutup || '16:00'}</p>
+                              <p className="text-xs font-semibold text-slate-400">{selectedUmkm.jam_operasional?.hari || 'Senin - Minggu'}</p>
                             </div>
-                            <span className="text-sm font-black text-blue-600">Rp {item.harga?.toLocaleString()}</span>
                           </div>
-                        ))
-                      ) : (
-                        <div className="text-center py-10">
-                          <p className="text-sm font-bold text-slate-400">Menu belum tersedia</p>
+                          <div className="flex gap-4">
+                            <Store className="text-blue-600 shrink-0" size={20} />
+                            <p className="text-sm font-semibold text-slate-700">{selectedUmkm.price_range || 'Rp 10.000 - Rp 50.000'} per orang</p>
+                          </div>
+                          <div className="flex gap-4">
+                            <Phone className="text-blue-600 shrink-0" size={20} />
+                            <p className="text-sm font-semibold text-slate-700">{selectedUmkm.whatsapp || '-'}</p>
+                          </div>
                         </div>
-                      )}
-                    </motion.div>
-                  )}
+                      </motion.div>
+                    )}
 
-                  {activeTab === 'reviews' && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
-                       {selectedUmkm.reviews && selectedUmkm.reviews.length > 0 ? (
-                         selectedUmkm.reviews.map((rev: any) => (
-                           <div key={rev.id} className="p-4 rounded-2xl border border-slate-100">
-                             <div className="flex justify-between items-center mb-2">
-                               <h4 className="text-sm font-black text-slate-900">{rev.user_name}</h4>
-                               <div className="flex gap-0.5">
-                                  {[1,2,3,4,5].map(i => (
-                                    <span key={i} className={`text-[10px] ${i <= rev.rating ? 'text-amber-400' : 'text-slate-200'}`}>★</span>
-                                  ))}
+                    {activeTab === 'menu' && (
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
+                        {selectedUmkm.menu_items && selectedUmkm.menu_items.length > 0 ? (
+                          selectedUmkm.menu_items.map((item: any) => (
+                            <div key={item.id} className="flex justify-between items-center p-4 rounded-2xl border border-slate-100 bg-slate-50/30">
+                              <div>
+                                <h4 className="font-bold text-slate-900">{item.nama}</h4>
+                                <p className="text-xs text-slate-500 mt-1">{item.deskripsi}</p>
+                              </div>
+                              <span className="text-sm font-black text-blue-600">Rp {item.harga?.toLocaleString()}</span>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="text-center py-10">
+                            <p className="text-sm font-bold text-slate-400">Menu belum tersedia</p>
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+
+                    {activeTab === 'reviews' && (
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
+                         {selectedUmkm.reviews && selectedUmkm.reviews.length > 0 ? (
+                           selectedUmkm.reviews.map((rev: any) => (
+                             <div key={rev.id} className="p-4 rounded-2xl border border-slate-100">
+                               <div className="flex justify-between items-center mb-2">
+                                 <h4 className="text-sm font-black text-slate-900">{rev.user_name}</h4>
+                                 <div className="flex gap-0.5">
+                                    {[1,2,3,4,5].map(i => (
+                                      <span key={i} className={`text-[10px] ${i <= rev.rating ? 'text-amber-400' : 'text-slate-200'}`}>★</span>
+                                    ))}
+                                 </div>
                                </div>
+                               <p className="text-xs text-slate-600 leading-relaxed font-medium">"{rev.comment}"</p>
+                               <p className="text-[9px] text-slate-400 mt-2 font-bold uppercase">{new Date(rev.created_at).toLocaleDateString()}</p>
                              </div>
-                             <p className="text-xs text-slate-600 leading-relaxed font-medium">"{rev.comment}"</p>
-                             <p className="text-[9px] text-slate-400 mt-2 font-bold uppercase">{new Date(rev.created_at).toLocaleDateString()}</p>
+                           ))
+                         ) : (
+                           <div className="text-center py-10">
+                             <p className="text-sm font-bold text-slate-400">Belum ada ulasan</p>
                            </div>
-                         ))
-                       ) : (
-                         <div className="text-center py-10">
-                           <p className="text-sm font-bold text-slate-400">Belum ada ulasan</p>
-                         </div>
-                       )}
-                    </motion.div>
-                  )}
+                         )}
+                      </motion.div>
+                    )}
 
-                  {activeTab === 'about' && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
-                      <div className="p-6 rounded-[32px] bg-slate-900 text-white relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                        <div className="flex items-center gap-5 relative">
-                          <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center backdrop-blur-xl border border-white/10">
-                             <Store size={32} className="text-blue-400" />
-                          </div>
-                          <div>
-                            <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest block mb-1">Pemilik Usaha</span>
-                            <h4 className="text-xl font-bold">{selectedUmkm.nama_pemilik}</h4>
+                    {activeTab === 'about' && (
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+                        <div className="p-6 rounded-[32px] bg-slate-900 text-white relative overflow-hidden group">
+                          <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <div className="flex items-center gap-5 relative">
+                            <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center backdrop-blur-xl border border-white/10">
+                               <Store size={32} className="text-blue-400" />
+                            </div>
+                            <div>
+                              <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest block mb-1">Pemilik Usaha</span>
+                              <h4 className="text-xl font-bold">{selectedUmkm.nama_pemilik}</h4>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="space-y-4 px-2">
-                        <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">Tentang Kami</h4>
-                        <p className="text-sm font-medium text-slate-600 leading-relaxed">
-                          {selectedUmkm.deskripsi}
-                        </p>
-                      </div>
-                    </motion.div>
-                  )}
+                        <div className="space-y-4 px-2">
+                          <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">Tentang Kami</h4>
+                          <p className="text-sm font-medium text-slate-600 leading-relaxed">
+                            {selectedUmkm.deskripsi}
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </div>
                 </div>
               </ScrollArea>
 
@@ -447,6 +497,6 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
           )}
         </AnimatePresence>
       </div>
-    </div>
+    </>
   );
 }

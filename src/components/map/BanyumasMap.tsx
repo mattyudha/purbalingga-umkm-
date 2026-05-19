@@ -66,8 +66,8 @@ function SearchKecamatan({ geoJsonData, villageData, onSelectFeature, onSelectDe
   };
 
   return (
-    <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-[1000]">
-      <div className="relative">
+    <div className="absolute top-4 left-4 right-4 sm:left-auto sm:top-4 sm:right-4 z-[1000]">
+      <div className="relative w-full">
         {/* Search Input */}
         <div className={`flex items-center gap-2 px-3 py-2.5 rounded-xl shadow-lg border transition-all duration-200 bg-white/95 backdrop-blur-sm ${
           isOpen ? 'border-blue-300 shadow-xl ring-2 ring-blue-100' : 'border-slate-200 hover:border-blue-300'
@@ -83,7 +83,7 @@ function SearchKecamatan({ geoJsonData, villageData, onSelectFeature, onSelectDe
             }}
             onFocus={() => query.trim() && setIsOpen(true)}
             placeholder="Cari nama desa/kecamatan di Kabupaten Banyumas"
-            className="bg-transparent border-none outline-none text-xs font-medium text-slate-700 placeholder:text-slate-400 w-64 sm:w-72"
+            className="bg-transparent border-none outline-none text-xs font-medium text-slate-700 placeholder:text-slate-400 w-full sm:w-72"
           />
           {query && (
             <button
@@ -99,7 +99,7 @@ function SearchKecamatan({ geoJsonData, villageData, onSelectFeature, onSelectDe
         {isOpen && (
           <>
             <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
-            <div className="absolute right-0 mt-2 w-72 sm:w-80 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200/80 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
+            <div className="absolute right-0 left-0 sm:left-auto mt-2 w-full sm:w-80 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200/80 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200 origin-top">
               {/* Header */}
               <div className="px-4 py-3 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -308,7 +308,7 @@ function MapLegend() {
 
 function MapInfoBadge() {
   return (
-    <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-slate-200 px-3 sm:px-4 py-2 sm:py-3">
+    <div className="absolute top-20 left-4 sm:top-4 sm:left-4 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-slate-200 px-3 sm:px-4 py-2 sm:py-3 transition-all">
       <div className="flex items-center gap-2">
         <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
           <MapPin size={16} className="text-blue-600" />
@@ -343,7 +343,7 @@ function CategoryLayerToggle({ umkmData, activeCategories, onChange }: { umkmDat
   const clearAll = () => onChange(new Set());
 
   return (
-    <div className="absolute top-[3.25rem] right-2 sm:top-28 sm:right-4 z-[1000]">
+    <div className="absolute top-20 right-4 sm:top-28 sm:right-4 z-[1000] transition-all">
       <div className="relative">
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -421,7 +421,7 @@ function CategoryLayerToggle({ umkmData, activeCategories, onChange }: { umkmDat
 
 function TourRouteButton({ showTourRoute, onToggle }: { showTourRoute: boolean; onToggle: () => void }) {
   return (
-    <div className="absolute top-[6.5rem] right-2 sm:top-40 sm:right-4 z-[1000]">
+    <div className="absolute top-[9rem] right-4 sm:top-40 sm:right-4 z-[1000] transition-all">
       <button
         onClick={onToggle}
         className={`flex items-center gap-2 px-3 py-2.5 rounded-xl shadow-lg border transition-all duration-200 ${
@@ -606,7 +606,7 @@ function LayerSwitcher({ activeLayer, onChange }: { activeLayer: MapLayerType; o
   const currentLayer = mapLayers.find((l) => l.id === activeLayer)!;
 
   return (
-    <div className="absolute top-14 right-2 sm:top-16 sm:right-4 z-[1000] hidden sm:block">
+    <div className="absolute top-[5.5rem] right-4 sm:top-16 sm:right-4 z-[1000] hidden sm:block transition-all">
       <div className="relative">
         {/* Toggle Button */}
         <button

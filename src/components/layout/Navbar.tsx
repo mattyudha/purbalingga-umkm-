@@ -80,8 +80,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Toggle */}
-          <div className="flex md:hidden items-center gap-3">
-            <UserNav />
+          <div className="flex md:hidden items-center gap-2">
             <Button
               variant="ghost"
               size="icon"
@@ -120,6 +119,9 @@ export default function Navbar() {
               </div>
               
               <div className="flex-1 overflow-y-auto py-6 px-4 space-y-2">
+                <div className="md:hidden mb-6 px-2">
+                  <UserNav mobile />
+                </div>
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
