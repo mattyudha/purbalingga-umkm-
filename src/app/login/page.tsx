@@ -140,25 +140,36 @@ export default function LoginPage() {
       </div>
 
       {/* Right Side - Premium Login Form */}
-      <div className="w-full lg:w-[45%] flex flex-col items-center justify-center p-8 sm:p-16 relative overflow-hidden">
+      <div className="w-full lg:w-[45%] flex flex-col items-center justify-center p-6 sm:p-12 relative overflow-hidden min-h-screen lg:min-h-0">
+        
+        {/* Mobile Background - Only visible on small screens */}
+        <div className="absolute inset-0 z-0 lg:hidden">
+          <img
+            src="/banyumas-map-visual.svg"
+            alt="Banyumas Map Visual"
+            className="w-full h-full object-cover opacity-[0.15] scale-110"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-blue-900/5 via-slate-50/80 to-slate-50" />
+        </div>
+
         {/* Subtle background effects */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 lg:bg-blue-500/5 rounded-full blur-[100px] lg:blur-[120px] -translate-y-1/2 translate-x-1/2 z-0" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/10 lg:bg-emerald-500/5 rounded-full blur-[100px] lg:blur-[120px] translate-y-1/2 -translate-x-1/2 z-0" />
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-[440px] relative z-10"
+          className="w-full max-w-[420px] relative z-10 bg-white/70 lg:bg-transparent backdrop-blur-2xl lg:backdrop-blur-none p-8 sm:p-10 lg:p-0 rounded-[2.5rem] lg:rounded-none shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] lg:shadow-none border border-white/60 lg:border-none"
         >
-          <div className="lg:hidden flex flex-col items-center justify-center mb-14 text-center">
-            <Link href="/" className="flex flex-col items-center gap-5 group">
-              <div className="bg-gradient-to-tr from-slate-900 to-slate-800 p-4 rounded-[2rem] text-white shadow-2xl shadow-slate-900/20 border border-slate-700/50 group-hover:scale-105 transition-all duration-500 ring-1 ring-slate-900/5">
-                <img src="/purbalinggalogo.png" alt="Logo Banyumas" className="w-16 h-16 object-contain" />
+          <div className="lg:hidden flex flex-col items-center justify-center mb-10 text-center">
+            <Link href="/" className="flex flex-col items-center gap-4 group">
+              <div className="bg-gradient-to-tr from-slate-900 to-slate-800 p-4 rounded-[1.5rem] text-white shadow-xl shadow-slate-900/20 border border-slate-700/50 group-hover:scale-105 transition-all duration-500 ring-1 ring-white/10">
+                <img src="/purbalinggalogo.png" alt="Logo Banyumas" className="w-14 h-14 object-contain drop-shadow-md" />
               </div>
               <div className="flex flex-col items-center">
                 <span className="text-3xl font-black tracking-tighter text-slate-900 uppercase leading-none">Banyumas</span>
-                <span className="text-[10px] font-bold text-blue-600 tracking-[0.2em] uppercase mt-2">GIS Portal Untuk UMKM</span>
+                <span className="text-[10px] font-bold text-blue-600 tracking-[0.2em] uppercase mt-1.5">GIS Portal Untuk UMKM</span>
               </div>
             </Link>
           </div>
@@ -245,10 +256,10 @@ export default function LoginPage() {
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-slate-200"></span>
+                <span className="w-full border-t border-slate-200/60"></span>
               </div>
               <div className="relative flex justify-center text-xs font-bold uppercase tracking-widest">
-                <span className="bg-slate-50 lg:bg-white px-4 text-slate-400">Atau Lanjutkan Sebagai</span>
+                <span className="bg-transparent px-4 text-slate-400">Atau Lanjutkan Sebagai</span>
               </div>
             </div>
 
@@ -260,8 +271,8 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="mt-16 flex flex-col items-center gap-6">
-            <Link href="/" className="group flex items-center gap-3 text-slate-400 hover:text-slate-600 transition-all text-sm font-bold bg-white px-6 py-3 rounded-full shadow-sm border border-slate-100 hover:border-slate-200">
+          <div className="mt-12 flex flex-col items-center gap-6">
+            <Link href="/" className="group flex items-center gap-3 text-slate-500 hover:text-slate-700 transition-all text-sm font-bold bg-white/50 lg:bg-white px-6 py-3 rounded-full shadow-sm border border-slate-200/50 hover:border-slate-300 backdrop-blur-sm">
               <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
               Kembali ke Beranda
             </Link>

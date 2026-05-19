@@ -91,8 +91,7 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
     // Determine if the scroll container is at the top
     let isAtTop = true;
     if (scrollAreaRef.current) {
-      const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
-      if (viewport && viewport.scrollTop > 0) {
+      if (scrollAreaRef.current.scrollTop > 0) {
         isAtTop = false;
       }
     }
@@ -228,7 +227,7 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
       </div>
 
       <div className={`flex-1 relative overflow-hidden transition-opacity duration-300 ${!isMobileSheetOpen ? 'md:opacity-100 opacity-0 pointer-events-none md:pointer-events-auto hidden md:block' : ''}`}>
-        <ScrollArea className="h-full" ref={scrollAreaRef}>
+        <div className="h-full overflow-y-auto touch-pan-y" ref={scrollAreaRef}>
           <div className="p-5 pb-10 space-y-3">
             {isLoading ? (
               [1, 2, 3].map(i => (
@@ -290,7 +289,7 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
               </>
             )}
           </div>
-        </ScrollArea>
+        </div>
 
         {/* Enterprise Detail Overlay */}
         <AnimatePresence>
@@ -303,7 +302,7 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
               className="absolute inset-0 bg-white z-40 flex flex-col shadow-[-20px_0_60px_rgba(0,0,0,0.05)] overflow-hidden"
             >
               {/* Scrollable Area containing everything except footer */}
-              <ScrollArea className="flex-1" ref={scrollAreaRef}>
+              <div className="flex-1 overflow-y-auto touch-pan-y relative" ref={scrollAreaRef}>
                 <div className="flex flex-col min-h-full pb-6">
                   {/* Header Image & Back Button */}
                   <div className="relative h-64 shrink-0 z-10">
@@ -485,7 +484,7 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
                     )}
                   </div>
                 </div>
-              </ScrollArea>
+              </div>
 
               {/* Suggest Edit Footer */}
               <div className="p-4 bg-slate-50/50 border-t border-slate-100 text-center">
