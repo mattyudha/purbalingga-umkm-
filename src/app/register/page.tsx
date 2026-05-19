@@ -173,7 +173,7 @@ export default function RegisterPage() {
 
       {/* Right Side - scrollable on mobile, centered on desktop */}
       <div
-        className="flex-1 flex flex-col items-center lg:justify-center relative overflow-x-hidden overflow-y-auto lg:overflow-hidden"
+        className="flex-1 flex flex-col items-center lg:justify-center relative overflow-x-hidden overflow-y-auto lg:overflow-hidden px-5 sm:px-8 lg:px-12"
         style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}
       >
         {/* Mobile Background */}
@@ -201,20 +201,20 @@ export default function RegisterPage() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45 }}
-          className="w-full max-w-[420px] lg:max-w-[460px] relative z-10
+          className="w-full max-w-none sm:max-w-[480px] lg:max-w-[520px] relative z-10
             bg-white/75 lg:bg-white
             backdrop-blur-2xl lg:backdrop-blur-none
-            p-8 sm:p-10 lg:p-12
-            rounded-[2.5rem] lg:rounded-[1.5rem]
+            p-7 sm:p-10 lg:p-14
+            rounded-[2rem] sm:rounded-[2.5rem] lg:rounded-[1.5rem]
             shadow-[0_20px_60px_-15px_rgba(0,0,0,0.06)] lg:shadow-[0_8px_30px_rgb(0,0,0,0.05)]
             border border-white/60 lg:border-slate-100 mx-auto
-            my-8 lg:my-0"
+            my-6 lg:my-0"
         >
           {/* Mobile Logo */}
           <div className="lg:hidden flex flex-col items-center justify-center mb-10 text-center">
             <Link href="/" className="flex flex-col items-center gap-4 group">
               <div className="bg-gradient-to-tr from-slate-900 to-slate-800 p-4 rounded-[1.5rem] text-white shadow-xl shadow-slate-900/20 border border-slate-700/50 group-hover:scale-105 transition-all duration-500 ring-1 ring-white/10">
-                <img src="/purbalinggalogo.png" alt="Logo Banyumas" className="w-14 h-14 object-contain drop-shadow-md" />
+                <img src="/purbalinggalogo.png" alt="Logo Banyumas" className="w-16 h-16 object-contain drop-shadow-md" />
               </div>
               <div className="flex flex-col items-center">
                 <span className="text-3xl font-black tracking-tighter text-slate-900 uppercase leading-none">Banyumas</span>
@@ -229,10 +229,10 @@ export default function RegisterPage() {
               <Plus className="w-4 h-4" />
               <span>Buat Akun Baru</span>
             </div>
-            <h2 className="text-[28px] lg:text-[36px] font-heading font-bold text-slate-900 mb-3 tracking-tighter leading-[1.1]">
+            <h2 className="text-[30px] sm:text-[34px] lg:text-[38px] font-heading font-bold text-slate-900 mb-3 tracking-tighter leading-[1.1]">
               Daftar Pelaku<br />UMKM.
             </h2>
-            <p className="text-[14px] lg:text-[15px] text-slate-500 max-w-[280px] lg:max-w-none mx-auto lg:mx-0 leading-[1.6]">
+            <p className="text-[14px] sm:text-[15px] lg:text-[16px] text-slate-500 max-w-[300px] lg:max-w-none mx-auto lg:mx-0 leading-[1.6]">
               Lengkapi formulir di bawah untuk memulai akses portal manajemen UMKM Banyumas.
             </p>
           </div>
