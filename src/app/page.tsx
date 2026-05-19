@@ -21,6 +21,7 @@ export default function Home() {
   const [selectedUmkm, setSelectedUmkm] = useState<any | null>(null);
   const [selectedDesa, setSelectedDesa] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCleanMode, setIsCleanMode] = useState(false);
 
   // Pre-compute desa for each UMKM using point-in-polygon
   const umkmWithDesa = useMemo(() => {
@@ -109,19 +110,21 @@ export default function Home() {
 
   return (
     <div className="flex flex-col h-[100dvh] overflow-hidden bg-slate-50">
-      <Navbar />
+      {!isCleanMode && <Navbar />}
 
       {/* Main Content Area */}
       <main className="flex flex-1 overflow-hidden relative">
         {/* Sidebar Component */}
-        <Sidebar 
-          umkmList={umkmWithDesa} 
-          selectedUmkm={selectedUmkm} 
-          onSelectUmkm={setSelectedUmkm}
-          selectedDesa={selectedDesa}
-          onSelectDesa={setSelectedDesa}
-          isLoading={isLoading}
-        />
+        {!isCleanMode && (
+          <Sidebar 
+            umkmList={umkmWithDesa} 
+            selectedUmkm={selectedUmkm} 
+            onSelectUmkm={setSelectedUmkm}
+            selectedDesa={selectedDesa}
+            onSelectDesa={setSelectedDesa}
+            isLoading={isLoading}
+          />
+        )}
 
         {/* Map Area */}
         <div className="absolute inset-0 md:relative md:flex-1 bg-slate-100 z-0">
@@ -135,6 +138,8 @@ export default function Home() {
             onSelectUmkm={setSelectedUmkm}
             selectedDesa={selectedDesa}
             onSelectDesa={setSelectedDesa}
+            isCleanMode={isCleanMode}
+            onToggleCleanMode={() => setIsCleanMode(!isCleanMode)}
           />
         </div>
       </main>

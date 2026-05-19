@@ -7,7 +7,7 @@ import simplify from '@turf/simplify';
 
 import { MapContainer, TileLayer, GeoJSON, Marker, Polyline, useMap } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
-import { Plus, Minus, MapPin, Layers, Store, Map, Satellite, Mountain, Check, Search, Navigation, X, BarChart3, TrendingUp, Building2, Filter, Route } from 'lucide-react';
+import { Plus, Minus, MapPin, Layers, Store, Map, Satellite, Mountain, Check, Search, Navigation, X, BarChart3, TrendingUp, Building2, Filter, Route, Eye, EyeOff } from 'lucide-react';
 
 interface BanyumasMapProps {
   geoJsonData: any;
@@ -19,6 +19,8 @@ interface BanyumasMapProps {
   onSelectUmkm: (umkm: any | null) => void;
   selectedDesa: string | null;
   onSelectDesa: (desa: string | null) => void;
+  isCleanMode?: boolean;
+  onToggleCleanMode?: () => void;
 }
 
 function getFeatureBounds(feature: any): L.LatLngBounds {
@@ -705,7 +707,7 @@ function LayerSwitcher({ activeLayer, onChange }: { activeLayer: MapLayerType; o
   );
 }
 
-export default function BanyumasMap({ geoJsonData, outlineData, maskData, villageData, umkmData, selectedUmkm, onSelectUmkm, selectedDesa, onSelectDesa }: BanyumasMapProps) {
+export default function BanyumasMap({ geoJsonData, outlineData, maskData, villageData, umkmData, selectedUmkm, onSelectUmkm, selectedDesa, onSelectDesa, isCleanMode, onToggleCleanMode }: BanyumasMapProps) {
   const banyumasCenter: [number, number] = [-7.41, 109.23];
   const [activeLayer, setActiveLayer] = useState<MapLayerType>('street');
   const [targetFeature, setTargetFeature] = useState<any | null>(null);
@@ -747,13 +749,32 @@ export default function BanyumasMap({ geoJsonData, outlineData, maskData, villag
   return (
     <div className="w-full h-full relative">
       {/* UI Overlays — outside MapContainer to avoid Leaflet appendChild errors */}
-      <SearchKecamatan geoJsonData={geoJsonData} villageData={villageData} onSelectFeature={setTargetFeature} onSelectDesa={onSelectDesa} />
-      <LayerSwitcher activeLayer={activeLayer} onChange={setActiveLayer} />
-      <CategoryLayerToggle umkmData={umkmData} activeCategories={activeCategories} onChange={setActiveCategories} />
-      <TourRouteButton showTourRoute={showTourRoute} onToggle={() => setShowTourRoute(!showTourRoute)} />
-      <MapLegend />
-      <MapInfoBadge />
-      <MapStatsWidget umkmData={umkmData} selectedDesa={selectedDesa} />
+      {!isCleanMode && (
+        <>
+          <SearchKecamatan geoJsonData={geoJsonData} villageData={villageData} onSelectFeature={setTargetFeature} onSelectDesa={onSelectDesa} />
+          <LayerSwitcher activeLayer={activeLayer} onChange={setActiveLayer} />
+          <CategoryLayerToggle umkmData={umkmData} activeCategories={activeCategories} onChange={setActiveCategories} />
+          <TourRouteButton showTourRoute={showTourRoute} onToggle={() => setShowTourRoute(!showTourRoute)} />
+          <MapLegend />
+          <MapInfoBadge />
+          <MapStatsWidget umkmData={umkmData} selectedDesa={selectedDesa} />
+        </>
+      )}
+
+      {/* Clean Mode Toggle Button */}
+      {onToggleCleanMode && (
+        <button
+          onClick={onToggleCleanMode}
+          className={`absolute z-[1000] w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 shadow-lg border ${
+            isCleanMode 
+              ? 'top-4 right-4 bg-white/95 backdrop-blur-sm border-slate-200 text-slate-700 hover:border-blue-300 hover:shadow-xl' 
+              : 'top-[4.5rem] right-4 sm:top-[7.5rem] sm:right-4 bg-white/95 backdrop-blur-sm border-slate-200 text-slate-500 hover:text-slate-700 hover:border-blue-300'
+          }`}
+          title={isCleanMode ? "Tampilkan Antarmuka" : "Sembunyikan Antarmuka (Peta Penuh)"}
+        >
+          {isCleanMode ? <Eye size={18} strokeWidth={2.5} /> : <EyeOff size={18} strokeWidth={2.5} />}
+        </button>
+      )}
 
       <MapContainer
         center={banyumasCenter}
