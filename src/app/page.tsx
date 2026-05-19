@@ -109,10 +109,13 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col h-[100dvh] overflow-hidden bg-slate-50">
-      {!isCleanMode && <Navbar />}
+    <div className="flex flex-col md:flex-row h-[100dvh] overflow-hidden bg-slate-50 relative">
+      {/* Mobile Navbar (Only visible on small screens) */}
+      <div className="md:hidden w-full shrink-0 z-50">
+        {!isCleanMode && <Navbar />}
+      </div>
 
-      {/* Main Content Area */}
+      {/* Main Content Area (Sidebar on left, Map on right) */}
       <main className="flex flex-1 overflow-hidden relative">
         {/* Sidebar Component */}
         {!isCleanMode && (
@@ -127,7 +130,7 @@ export default function Home() {
         )}
 
         {/* Map Area */}
-        <div className="absolute inset-0 md:relative md:flex-1 bg-slate-100 z-0">
+        <div className="flex-1 h-full relative bg-slate-100 z-0">
           <BanyumasMap 
             geoJsonData={geoJsonData} 
             outlineData={outlineData}

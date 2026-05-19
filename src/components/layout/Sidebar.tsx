@@ -9,6 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, Globe, Clock, ShieldCheck } from 'lucide-react';
+import Link from 'next/link';
+import UserNav from './UserNav';
 
 interface SidebarProps {
   umkmList: any[];
@@ -144,20 +146,43 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
       />
 
       <div 
-        className={`flex flex-col bg-slate-50/95 md:bg-slate-50/80 backdrop-blur-xl md:backdrop-blur-none border-r border-slate-200/60 shadow-[0_-10px_40px_rgba(0,0,0,0.15)] md:shadow-[0_0_80px_rgba(0,0,0,0.03)] absolute md:relative z-20 w-full md:w-[420px] shrink-0 overflow-hidden transition-all duration-500 ease-in-out ${isMobileSheetOpen ? 'h-[90dvh] bottom-0 rounded-t-[2.5rem]' : 'h-[100px] bottom-0 rounded-t-[2.5rem]'} md:h-full md:rounded-none md:bottom-auto`}
+        className={`flex flex-col bg-slate-50/95 md:bg-white border-r border-slate-200/60 shadow-[0_-10px_40px_rgba(0,0,0,0.15)] md:shadow-[0_0_80px_rgba(0,0,0,0.03)] absolute md:relative z-20 w-full md:w-[420px] shrink-0 overflow-hidden transition-all duration-500 ease-in-out ${isMobileSheetOpen ? 'h-[90dvh] bottom-0 rounded-t-[2.5rem]' : 'h-[100px] bottom-0 rounded-t-[2.5rem]'} md:h-full md:rounded-none md:bottom-auto`}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-      {/* Mobile Handle */}
-      <div 
-        className="md:hidden flex flex-col items-center justify-center pt-4 pb-2 cursor-pointer bg-transparent relative z-40 shrink-0"
-        onClick={() => setIsMobileSheetOpen(!isMobileSheetOpen)}
-      >
-        <div className="w-12 h-1.5 bg-slate-300 rounded-full mb-1"></div>
-        {!isMobileSheetOpen && (
-          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Tarik untuk Eksplorasi</p>
-        )}
-      </div>
+        {/* Desktop Header (Logo & Auth) */}
+        <div className="hidden md:flex flex-col gap-4 p-5 md:p-7 pb-0 shrink-0 bg-transparent relative z-30 w-full">
+          <div className="flex items-center justify-between w-full">
+            <Link href="/" className="flex items-center gap-3 group">
+              <img 
+                src="/purbalinggalogo.png" 
+                alt="Logo Banyumas" 
+                className="h-10 w-auto object-contain group-hover:scale-105 transition-transform duration-200"
+              />
+              <div className="flex flex-col">
+                <span className="font-heading font-black text-xl tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-r from-slate-950 via-blue-900 to-slate-900 uppercase">
+                  Banyumas
+                </span>
+                <span className="text-[8px] font-black text-blue-600/80 uppercase tracking-[0.3em] mt-1 flex items-center gap-2">
+                  <span className="w-4 h-[1px] bg-blue-100" />
+                  SI UMKM
+                </span>
+              </div>
+            </Link>
+            <UserNav />
+          </div>
+        </div>
+
+        {/* Mobile Handle */}
+        <div 
+          className="md:hidden flex flex-col items-center justify-center pt-4 pb-2 cursor-pointer bg-transparent relative z-40 shrink-0"
+          onClick={() => setIsMobileSheetOpen(!isMobileSheetOpen)}
+        >
+          <div className="w-12 h-1.5 bg-slate-300 rounded-full mb-1"></div>
+          {!isMobileSheetOpen && (
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Tarik untuk Eksplorasi</p>
+          )}
+        </div>
 
       {/* Search & Filter Header */}
       <div className={`p-5 md:p-7 pb-4 md:pb-5 space-y-4 md:space-y-6 bg-transparent sticky top-0 z-30 transition-opacity duration-300 ${!isMobileSheetOpen && 'md:opacity-100 opacity-0 pointer-events-none md:pointer-events-auto hidden md:block'}`}>
