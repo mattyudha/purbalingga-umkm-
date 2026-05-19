@@ -80,14 +80,14 @@ export default function LoginPage() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            className="flex items-center gap-4 group cursor-pointer"
+            className="flex items-center gap-6 group cursor-pointer"
           >
-            <div className="bg-white/10 backdrop-blur-xl p-2 rounded-2xl border border-white/20 shadow-2xl group-hover:bg-white transition-all duration-300">
-              <img src="/purbalinggalogo.png" alt="Logo Banyumas" className="w-12 h-12 object-contain" />
+            <div className="bg-slate-900/50 backdrop-blur-2xl p-4 rounded-[2rem] border border-white/10 shadow-2xl group-hover:bg-white/10 transition-all duration-500 ring-1 ring-white/5 group-hover:ring-white/20 group-hover:scale-105">
+              <img src="/purbalinggalogo.png" alt="Logo Banyumas" className="w-16 h-16 lg:w-20 lg:h-20 object-contain drop-shadow-lg" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-3xl font-black tracking-tighter uppercase leading-none">Banyumas</span>
-              <span className="text-[10px] font-bold text-blue-400 tracking-[0.3em] uppercase mt-1">GIS Portal Untu UMKM Banyumas</span>
+            <div className="flex flex-col justify-center">
+              <span className="text-4xl lg:text-5xl font-black tracking-tighter uppercase leading-none text-white drop-shadow-md">Banyumas</span>
+              <span className="text-[11px] lg:text-xs font-black text-blue-400 tracking-[0.3em] uppercase mt-2 drop-shadow-md">GIS Portal Untuk UMKM Banyumas</span>
             </div>
           </motion.div>
 
@@ -151,12 +151,15 @@ export default function LoginPage() {
           transition={{ duration: 0.5 }}
           className="w-full max-w-[440px] relative z-10"
         >
-          <div className="lg:hidden flex justify-center mb-12">
-            <Link href="/" className="flex flex-col items-center gap-2">
-              <div className="bg-blue-600 p-2 rounded-3xl text-white shadow-2xl shadow-blue-500/20">
-                <img src="/purbalinggalogo.png" alt="Logo Banyumas" className="w-12 h-12 object-contain brightness-0 invert" />
+          <div className="lg:hidden flex flex-col items-center justify-center mb-14 text-center">
+            <Link href="/" className="flex flex-col items-center gap-5 group">
+              <div className="bg-gradient-to-tr from-slate-900 to-slate-800 p-4 rounded-[2rem] text-white shadow-2xl shadow-slate-900/20 border border-slate-700/50 group-hover:scale-105 transition-all duration-500 ring-1 ring-slate-900/5">
+                <img src="/purbalinggalogo.png" alt="Logo Banyumas" className="w-16 h-16 object-contain" />
               </div>
-              <span className="text-2xl font-black tracking-tight text-slate-900 uppercase">Banyumas</span>
+              <div className="flex flex-col items-center">
+                <span className="text-3xl font-black tracking-tighter text-slate-900 uppercase leading-none">Banyumas</span>
+                <span className="text-[10px] font-bold text-blue-600 tracking-[0.2em] uppercase mt-2">GIS Portal Untuk UMKM</span>
+              </div>
             </Link>
           </div>
 
