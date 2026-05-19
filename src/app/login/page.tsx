@@ -62,9 +62,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex bg-[#F8F9FB] selection:bg-blue-100 selection:text-blue-900" style={{ height: '100dvh' }}>
-      {/* Left Side - Premium Map Visual */}
-      <div className="hidden lg:flex lg:w-[55%] relative overflow-hidden bg-slate-900">
+    // Outer wrapper: fixed on mobile to prevent horizontal drift/scroll
+    <div
+      className="flex bg-[#F8F9FB] selection:bg-blue-100 selection:text-blue-900"
+      style={{
+        position: 'fixed',
+        inset: 0,
+        overflow: 'hidden',
+        // On desktop revert to regular flow so the two-column layout works
+      }}
+    >
+      {/* Left Side - Premium Map Visual (desktop only) */}
+      <div className="hidden lg:flex lg:w-[55%] relative overflow-hidden bg-slate-900 shrink-0">
         <div className="absolute inset-0 z-0">
           <img
             src="/banyumas-map-visual.svg"
@@ -139,30 +148,47 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Right Side - Premium Login Form */}
-      {/* On mobile: overflow-y-auto + items-start so keyboard doesn't push content off screen */}
-      <div className="w-full lg:w-[45%] flex flex-col items-center lg:justify-center px-6 py-8 relative overflow-y-auto lg:overflow-hidden" style={{ WebkitOverflowScrolling: 'touch', minHeight: '100dvh', overscrollBehavior: 'contain' }}>
-        
-        {/* Mobile Background - Only visible on small screens */}
-        <div className="absolute inset-0 z-0 lg:hidden">
+      {/* Right Side - scrollable form container, locked width = 100vw on mobile */}
+      <div
+        className="flex-1 flex flex-col items-center lg:justify-center relative"
+        style={{
+          overflowX: 'hidden',        // ← prevents left/right swipe
+          overflowY: 'auto',          // ← allows vertical scroll when keyboard appears
+          WebkitOverflowScrolling: 'touch',
+          overscrollBehavior: 'contain',
+        }}
+      >
+        {/* Mobile Background */}
+        <div className="absolute inset-0 z-0 lg:hidden pointer-events-none">
           <img
             src="/banyumas-map-visual.svg"
             alt="Banyumas Map Visual"
-            className="w-full h-full object-cover opacity-[0.15] scale-110"
+            className="w-full h-full object-cover opacity-[0.12]"
+            style={{ transform: 'scale(1.05)' }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-blue-900/5 via-slate-50/80 to-slate-50" />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-50/60 via-slate-50/85 to-slate-50" />
         </div>
 
-        {/* Subtle background effects */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 lg:bg-blue-500/5 rounded-full blur-[100px] lg:blur-[120px] -translate-y-1/2 translate-x-1/2 z-0" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/10 lg:bg-emerald-500/5 rounded-full blur-[100px] lg:blur-[120px] translate-y-1/2 -translate-x-1/2 z-0" />
+        {/* Decorative blobs — clipped so they don't cause overflow */}
+        <div
+          className="absolute top-0 right-0 w-80 h-80 bg-blue-500/10 rounded-full blur-[90px] z-0 pointer-events-none"
+          style={{ transform: 'translate(30%, -30%)' }}
+        />
+        <div
+          className="absolute bottom-0 left-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-[90px] z-0 pointer-events-none"
+          style={{ transform: 'translate(-30%, 30%)' }}
+        />
 
+        {/* Form card — py-10 gives breathing room top/bottom */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-[390px] relative z-10 bg-white/70 lg:bg-white backdrop-blur-2xl lg:backdrop-blur-none p-8 sm:p-10 lg:p-10 rounded-[2.5rem] lg:rounded-[1.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] lg:shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 lg:border-slate-100"
-          style={{ marginBottom: 'env(safe-area-inset-bottom, 24px)' }}
+          transition={{ duration: 0.45 }}
+          className="w-full max-w-[390px] relative z-10 bg-white/75 lg:bg-white backdrop-blur-2xl lg:backdrop-blur-none p-8 sm:p-10 rounded-[2.5rem] lg:rounded-[1.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.06)] border border-white/60 lg:border-slate-100 mx-auto"
+          style={{
+            marginTop: 'max(env(safe-area-inset-top, 0px), 32px)',
+            marginBottom: 'max(env(safe-area-inset-bottom, 0px), 32px)',
+          }}
         >
           <div className="lg:hidden flex flex-col items-center justify-center mb-16 text-center">
             <Link href="/" className="flex flex-col items-center gap-4 group">
