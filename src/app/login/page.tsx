@@ -162,7 +162,7 @@ export default function LoginPage() {
           transition={{ duration: 0.5 }}
           className="w-full max-w-[420px] relative z-10 bg-white/70 lg:bg-transparent backdrop-blur-2xl lg:backdrop-blur-none p-8 sm:p-10 lg:p-0 rounded-[2.5rem] lg:rounded-none shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] lg:shadow-none border border-white/60 lg:border-none"
         >
-          <div className="lg:hidden flex flex-col items-center justify-center mb-10 text-center">
+          <div className="lg:hidden flex flex-col items-center justify-center mb-16 text-center">
             <Link href="/" className="flex flex-col items-center gap-4 group">
               <div className="bg-gradient-to-tr from-slate-900 to-slate-800 p-4 rounded-[1.5rem] text-white shadow-xl shadow-slate-900/20 border border-slate-700/50 group-hover:scale-105 transition-all duration-500 ring-1 ring-white/10">
                 <img src="/purbalinggalogo.png" alt="Logo Banyumas" className="w-14 h-14 object-contain drop-shadow-md" />
@@ -174,12 +174,8 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <div className="mb-12 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 text-blue-600 font-bold text-xs uppercase tracking-widest mb-4">
-              <ShieldCheck size={16} />
-              <span>Secure Authentication</span>
-            </div>
-            <h2 className="text-4xl font-black text-slate-900 mb-4 tracking-tight leading-tight">Selamat Datang Kembali.</h2>
+          <div className="mb-14 text-center lg:text-left">
+            <h2 className="text-[2.75rem] font-heading font-black text-slate-900 mb-4 tracking-tighter leading-[1.05]">Selamat Datang<br/>Kembali.</h2>
             <p className="text-slate-500 text-lg font-medium leading-relaxed">Masukkan kredensial Anda untuk mengakses panel manajemen UMKM.</p>
           </div>
 

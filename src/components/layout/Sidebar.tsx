@@ -290,8 +290,9 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
             )}
           </div>
         </div>
+      </div>
 
-        {/* Enterprise Detail Overlay */}
+      {/* Enterprise Detail Overlay */}
         <AnimatePresence>
           {selectedUmkm && (
             <motion.div 
@@ -299,7 +300,7 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: '100%', opacity: 0 }}
               transition={{ type: 'spring', damping: 30, stiffness: 250 }}
-              className="absolute inset-0 bg-white z-40 flex flex-col shadow-[-20px_0_60px_rgba(0,0,0,0.05)] overflow-hidden"
+              className="absolute inset-0 bg-white z-40 flex flex-col shadow-[-20px_0_60px_rgba(0,0,0,0.05)] overflow-hidden pt-12 md:pt-0 rounded-t-[2.5rem] md:rounded-none"
             >
               {/* Scrollable Area containing everything except footer */}
               <div className="flex-1 overflow-y-auto touch-pan-y relative" ref={scrollAreaRef}>
@@ -495,8 +496,6 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
-    </div>
     </>
   );
 }
