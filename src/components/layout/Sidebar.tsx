@@ -497,6 +497,7 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
           )}
         </AnimatePresence>
       </div>
+    </div>
     </>
   );
 }
