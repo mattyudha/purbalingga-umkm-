@@ -62,7 +62,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex bg-slate-50 selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen flex bg-[#F8F9FB] selection:bg-blue-100 selection:text-blue-900">
       {/* Left Side - Premium Map Visual */}
       <div className="hidden lg:flex lg:w-[55%] relative overflow-hidden bg-slate-900">
         <div className="absolute inset-0 z-0">
@@ -140,7 +140,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right Side - Premium Login Form */}
-      <div className="w-full lg:w-[45%] flex flex-col items-center justify-center p-6 sm:p-12 relative overflow-hidden min-h-screen lg:min-h-0">
+      <div className="w-full lg:w-[45%] flex flex-col items-center justify-center px-6 py-8 relative overflow-hidden min-h-screen lg:min-h-0">
         
         {/* Mobile Background - Only visible on small screens */}
         <div className="absolute inset-0 z-0 lg:hidden">
@@ -160,7 +160,7 @@ export default function LoginPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-[420px] relative z-10 bg-white/70 lg:bg-transparent backdrop-blur-2xl lg:backdrop-blur-none p-8 sm:p-10 lg:p-0 rounded-[2.5rem] lg:rounded-none shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] lg:shadow-none border border-white/60 lg:border-none"
+          className="w-full max-w-[390px] relative z-10 bg-white/70 lg:bg-white backdrop-blur-2xl lg:backdrop-blur-none p-8 sm:p-10 lg:p-10 rounded-[2.5rem] lg:rounded-[1.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] lg:shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 lg:border-slate-100"
         >
           <div className="lg:hidden flex flex-col items-center justify-center mb-16 text-center">
             <Link href="/" className="flex flex-col items-center gap-4 group">
@@ -174,17 +174,17 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <div className="mb-14 text-center lg:text-left">
-            <h2 className="text-[2.75rem] font-heading font-black text-slate-900 mb-4 tracking-tighter leading-[1.05]">Selamat Datang<br/>Kembali.</h2>
-            <p className="text-slate-500 text-lg font-medium leading-relaxed">Masukkan kredensial Anda untuk mengakses panel manajemen UMKM.</p>
+          <div className="mb-8 pt-10 text-center lg:text-left">
+            <h2 className="text-[28px] lg:text-[32px] font-heading font-bold text-slate-900 mb-3 tracking-tighter leading-[1.1]">Selamat Datang<br/>Kembali.</h2>
+            <p className="text-[14px] text-slate-500 max-w-[260px] mx-auto lg:mx-0 leading-[1.6]">Masukkan kredensial Anda untuk mengakses panel manajemen UMKM.</p>
           </div>
 
-          <div className="space-y-8">
-            <form onSubmit={handleLogin} className="space-y-6">
-              <div className="space-y-3">
-                <Label htmlFor="email" className="text-slate-800 font-bold text-sm ml-1 flex items-center justify-between">
+          <div className="space-y-5">
+            <form onSubmit={handleLogin} className="space-y-5">
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="text-slate-600 font-medium text-[13px] ml-1 flex items-center">
                   Alamat Email
-                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Required</span>
+                  <span className="text-red-500 ml-1">*</span>
                 </Label>
                 <div className="relative group">
                   <Input
@@ -194,15 +194,15 @@ export default function LoginPage() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-14 bg-white border-slate-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-600/5 transition-all rounded-2xl px-5 text-base font-medium placeholder:text-slate-300 shadow-sm"
+                    className="h-[44px] bg-white border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition-all rounded-[10px] px-4 text-[15px] placeholder:text-[14px] placeholder:text-[#9CA3AF] shadow-sm"
                   />
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-1.5">
                 <div className="flex items-center justify-between ml-1">
-                  <Label htmlFor="password" className="text-slate-800 font-bold text-sm">Kata Sandi</Label>
-                  <Link href="/forgot-password" className="text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors">
+                  <Label htmlFor="password" className="text-slate-600 font-medium text-[13px]">Kata Sandi <span className="text-red-500 ml-0.5">*</span></Label>
+                  <Link href="/forgot-password" className="text-[13px] font-medium text-blue-600 hover:text-blue-700 transition-colors">
                     Lupa Password?
                   </Link>
                 </div>
@@ -213,7 +213,7 @@ export default function LoginPage() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="h-14 bg-white border-slate-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-600/5 transition-all rounded-2xl px-5 text-base font-medium placeholder:text-slate-300 shadow-sm pr-14"
+                    className="h-[44px] bg-white border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition-all rounded-[10px] px-4 text-[15px] placeholder:text-[14px] placeholder:text-[#9CA3AF] shadow-sm pr-12"
                   />
                   <button
                     type="button"
@@ -236,10 +236,10 @@ export default function LoginPage() {
                 </motion.div>
               )}
 
-              <Button className="w-full h-14 bg-slate-900 hover:bg-blue-600 text-white rounded-2xl font-black text-lg shadow-xl shadow-slate-200 hover:shadow-blue-200 transition-all active:scale-[0.98] flex items-center justify-center gap-3" type="submit" disabled={isLoading}>
+              <Button className="w-full h-[48px] bg-slate-900 hover:bg-slate-800 text-white rounded-[12px] font-semibold text-[15px] shadow-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 mt-2" type="submit" disabled={isLoading}>
                 {isLoading ? (
                   <>
-                    <Loader2 className="h-6 w-6 animate-spin" />
+                    <Loader2 className="h-5 w-5 animate-spin" />
                     Authenticating...
                   </>
                 ) : (
@@ -254,8 +254,8 @@ export default function LoginPage() {
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t border-slate-200/60"></span>
               </div>
-              <div className="relative flex justify-center text-xs font-bold uppercase tracking-widest">
-                <span className="bg-transparent px-4 text-slate-400">Atau Lanjutkan Sebagai</span>
+              <div className="relative flex justify-center text-[13px] font-medium text-slate-400">
+                <span className="bg-white/90 lg:bg-white px-4 lowercase first-letter:uppercase">Atau lanjutkan sebagai</span>
               </div>
             </div>
 
