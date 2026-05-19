@@ -62,7 +62,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex bg-[#F8F9FB] selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen flex bg-[#F8F9FB] selection:bg-blue-100 selection:text-blue-900" style={{ height: '100dvh' }}>
       {/* Left Side - Premium Map Visual */}
       <div className="hidden lg:flex lg:w-[55%] relative overflow-hidden bg-slate-900">
         <div className="absolute inset-0 z-0">
@@ -140,7 +140,8 @@ export default function LoginPage() {
       </div>
 
       {/* Right Side - Premium Login Form */}
-      <div className="w-full lg:w-[45%] flex flex-col items-center justify-center px-6 py-8 relative overflow-hidden min-h-screen lg:min-h-0">
+      {/* On mobile: overflow-y-auto + items-start so keyboard doesn't push content off screen */}
+      <div className="w-full lg:w-[45%] flex flex-col items-center lg:justify-center px-6 py-8 relative overflow-y-auto lg:overflow-hidden" style={{ WebkitOverflowScrolling: 'touch', minHeight: '100dvh', overscrollBehavior: 'contain' }}>
         
         {/* Mobile Background - Only visible on small screens */}
         <div className="absolute inset-0 z-0 lg:hidden">
@@ -161,6 +162,7 @@ export default function LoginPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="w-full max-w-[390px] relative z-10 bg-white/70 lg:bg-white backdrop-blur-2xl lg:backdrop-blur-none p-8 sm:p-10 lg:p-10 rounded-[2.5rem] lg:rounded-[1.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] lg:shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 lg:border-slate-100"
+          style={{ marginBottom: 'env(safe-area-inset-bottom, 24px)' }}
         >
           <div className="lg:hidden flex flex-col items-center justify-center mb-16 text-center">
             <Link href="/" className="flex flex-col items-center gap-4 group">

@@ -57,7 +57,13 @@ export default function MobileAuthSheet({ isOpen, onClose, initialMode = 'login'
       if (!el) return;
       // keyboard offset = how much of the screen the keyboard is covering
       const keyboardOffset = Math.max(0, window.innerHeight - vv.offsetTop - vv.height);
-      el.style.bottom = `${keyboardOffset}px`;
+      // Use requestAnimationFrame to batch the DOM write and avoid jank
+      requestAnimationFrame(() => {
+        if (el) {
+          el.style.transition = 'bottom 0.08s ease-out';
+          el.style.bottom = `${keyboardOffset}px`;
+        }
+      });
     };
 
     vv.addEventListener('resize', lockPosition);
@@ -156,12 +162,12 @@ export default function MobileAuthSheet({ isOpen, onClose, initialMode = 'login'
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 220 }}
-            className="fixed bottom-0 left-0 right-0 bg-white z-[120] rounded-t-[32px] md:hidden shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.15)]"
+          className="fixed left-0 right-0 bg-white z-[120] rounded-t-[32px] md:hidden shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.15)]"
             style={{
-              maxHeight: '85svh',
+              bottom: 0,
+              maxHeight: '85dvh',
               display: 'flex',
               flexDirection: 'column',
-              transition: 'bottom 0.05s linear',
             }}
           >
             {/* Handle & Header — fixed, doesn't scroll */}
