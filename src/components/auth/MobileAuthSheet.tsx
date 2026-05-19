@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
@@ -38,25 +38,46 @@ export default function MobileAuthSheet({ isOpen, onClose, initialMode = 'login'
     }
   }, [isOpen, initialMode]);
 
-  // Prevent background page scroll when sheet is open (body only, not html)
-  // We only hide overflow on body - NOT html - so iOS can still render fixed elements correctly
-  React.useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+
+  // -----------------------------------------------------------
+  // visualViewport lock: keeps the sheet anchored when iOS keyboard
+  // appears. iOS shifts the visual viewport UP to show the focused
+  // input, which moves fixed elements. We counteract that shift by
+  // adjusting the sheet's CSS bottom to match the keyboard height.
+  // -----------------------------------------------------------
+  const sheetRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen || typeof window === 'undefined') return;
+    const vv = window.visualViewport;
+    if (!vv) return;
+
+    const lockPosition = () => {
+      const el = sheetRef.current;
+      if (!el) return;
+      // keyboard offset = how much of the screen the keyboard is covering
+      const keyboardOffset = Math.max(0, window.innerHeight - vv.offsetTop - vv.height);
+      el.style.bottom = `${keyboardOffset}px`;
+    };
+
+    vv.addEventListener('resize', lockPosition);
+    vv.addEventListener('scroll', lockPosition);
+    lockPosition(); // apply immediately when sheet opens
+
     return () => {
-      document.body.style.overflow = '';
+      vv.removeEventListener('resize', lockPosition);
+      vv.removeEventListener('scroll', lockPosition);
+      if (sheetRef.current) sheetRef.current.style.bottom = '0px';
     };
   }, [isOpen]);
 
-  // Scroll focused input into view within the sheet when keyboard appears
+  // Scroll focused input into view within the sheet
   const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     setTimeout(() => {
       e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 350); // wait for keyboard animation
+    }, 350);
   };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -128,22 +149,19 @@ export default function MobileAuthSheet({ isOpen, onClose, initialMode = 'login'
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] md:hidden"
           />
 
-          {/* Bottom Sheet
-              Key iOS fix: use fixed bottom-0 (stays above keyboard on iOS 15+)
-              No height manipulation — keyboard naturally overlaps the bottom of the sheet
-              Internal scroll handles bringing inputs into view */}
+          {/* Bottom Sheet — visualViewport API keeps this locked when iOS keyboard appears */}
           <motion.div
+            ref={sheetRef}
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 220 }}
             className="fixed bottom-0 left-0 right-0 bg-white z-[120] rounded-t-[32px] md:hidden shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.15)]"
             style={{
-              // svh = small viewport height (size when keyboard is open)
-              // This prevents the sheet from extending under the keyboard
               maxHeight: '85svh',
               display: 'flex',
               flexDirection: 'column',
+              transition: 'bottom 0.05s linear',
             }}
           >
             {/* Handle & Header — fixed, doesn't scroll */}
