@@ -26,6 +26,7 @@ export default function RootLayout({
     <html
       lang="id"
       className={`${outfit.variable} ${jakarta.variable} h-full antialiased`}
+      style={{ zoom: "75%" }}
     >
       <body className="min-h-full flex flex-col font-jakarta">{children}</body>
     </html>

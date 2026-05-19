@@ -103,20 +103,20 @@ export default function UserNav({ mobile, onAuthClick }: { mobile?: boolean, onA
       <div className={`flex ${mobile ? 'flex-col gap-2 w-full' : 'items-center gap-2'}`}>
         <Link href="/dashboard" className={mobile ? 'w-full' : ''}>
           <Button variant="outline" size={mobile ? 'default' : 'icon'} className={mobile ? 'w-full justify-start rounded-xl h-11' : 'rounded-full w-9 h-9'}>
-            <LayoutDashboard className="w-4 h-4 mr-3" /> {mobile ? 'Dashboard' : ''}
+            <LayoutDashboard className={`w-4 h-4 ${mobile ? 'mr-3' : ''}`} /> {mobile ? 'Dashboard' : ''}
           </Button>
         </Link>
         
         {['super_admin', 'admin_dinas'].includes(profile?.role) && (
           <Link href="/admin" className={mobile ? 'w-full' : ''}>
             <Button variant="outline" size={mobile ? 'default' : 'icon'} className={mobile ? 'w-full justify-start rounded-xl h-11 border-green-200 text-green-700 bg-green-50/30' : 'rounded-full w-9 h-9 border-green-200 text-green-700'}>
-              <ShieldCheck className="w-4 h-4 mr-3" /> {mobile ? 'Admin Panel' : ''}
+              <ShieldCheck className={`w-4 h-4 ${mobile ? 'mr-3' : ''}`} /> {mobile ? 'Admin Panel' : ''}
             </Button>
           </Link>
         )}
 
         <Button variant="ghost" size={mobile ? 'default' : 'icon'} onClick={handleLogout} className={mobile ? 'w-full justify-start rounded-xl h-11 text-slate-500 hover:text-red-600 hover:bg-red-50' : 'rounded-full w-9 h-9 text-slate-500 hover:text-red-600'}>
-          <LogOut className="w-4 h-4 mr-3" /> {mobile ? 'Keluar Akun' : ''}
+          <LogOut className={`w-4 h-4 ${mobile ? 'mr-3' : ''}`} /> {mobile ? 'Keluar Akun' : ''}
         </Button>
       </div>
     </div>

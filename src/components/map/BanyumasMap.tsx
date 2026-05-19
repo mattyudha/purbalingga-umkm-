@@ -28,144 +28,7 @@ function getFeatureBounds(feature: any): L.LatLngBounds {
   return L.geoJSON(feature).getBounds();
 }
 
-function SearchKecamatan({ geoJsonData, villageData, onSelectFeature, onSelectDesa }: { geoJsonData: any; villageData: any; onSelectFeature: (feature: any) => void; onSelectDesa: (desa: string | null) => void }) {
-  const [query, setQuery] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
-  const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const results = React.useMemo(() => {
-    if (!query.trim()) return [];
-    const q = query.toLowerCase().trim();
-    const kecamatanResults = geoJsonData?.features
-      ? geoJsonData.features
-          .filter((f: any) => {
-            const district = f.properties?.district?.toLowerCase() || '';
-            return district.includes(q);
-          })
-          .map((f: any) => ({ ...f, _type: 'kecamatan' as const }))
-      : [];
-    const desaResults = villageData?.features
-      ? villageData.features
-          .filter((f: any) => {
-            const village = f.properties?.village?.toLowerCase() || '';
-            const district = f.properties?.district?.toLowerCase() || '';
-            return village.includes(q) || district.includes(q);
-          })
-          .map((f: any) => ({ ...f, _type: 'desa' as const }))
-      : [];
-    return [...desaResults, ...kecamatanResults];
-  }, [query, geoJsonData, villageData]);
-
-  const handleSelect = (feature: any) => {
-    onSelectFeature(feature);
-    setQuery('');
-    setIsOpen(false);
-  };
-
-  const clearSearch = () => {
-    setQuery('');
-    setIsOpen(false);
-    inputRef.current?.focus();
-  };
-
-  return (
-    <div className="absolute top-4 left-4 right-4 sm:left-auto sm:top-4 sm:right-4 z-[1000]">
-      <div className="relative w-full">
-        {/* Search Input */}
-        <div className={`flex items-center gap-2 px-3 py-2.5 rounded-xl shadow-lg border transition-all duration-200 bg-white/95 backdrop-blur-sm ${
-          isOpen ? 'border-blue-300 shadow-xl ring-2 ring-blue-100' : 'border-slate-200 hover:border-blue-300'
-        }`}>
-          <Search size={16} className="text-slate-400 flex-shrink-0" strokeWidth={2.5} />
-          <input
-            ref={inputRef}
-            type="text"
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setIsOpen(true);
-            }}
-            onFocus={() => query.trim() && setIsOpen(true)}
-            placeholder="Cari nama desa/kecamatan di Kabupaten Banyumas"
-            className="bg-transparent border-none outline-none text-xs font-medium text-slate-700 placeholder:text-slate-400 w-full sm:w-72"
-          />
-          {query && (
-            <button
-              onClick={clearSearch}
-              className="flex items-center justify-center w-5 h-5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors flex-shrink-0"
-            >
-              <X size={12} strokeWidth={2.5} />
-            </button>
-          )}
-        </div>
-
-        {/* Results Dropdown */}
-        {isOpen && (
-          <>
-            <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
-            <div className="absolute right-0 left-0 sm:left-auto mt-2 w-full sm:w-80 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200/80 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200 origin-top">
-              {/* Header */}
-              <div className="px-4 py-3 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center">
-                    <Navigation size={14} className="text-blue-600" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-slate-800">Cari Daerah</h4>
-                    <p className="text-[10px] text-slate-500">
-                      {results.length} hasil ditemukan
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Results List */}
-              <div className="p-2 max-h-64 overflow-y-auto">
-                {results.length > 0 ? (
-                  results.map((feature: any, idx: number) => (
-                    <button
-                      key={idx}
-                      onClick={() => handleSelect(feature)}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 hover:bg-blue-50 border border-transparent hover:border-blue-100 text-left"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-                        <MapPin size={14} className="text-blue-600" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-bold text-slate-700 truncate">
-                          {feature._type === 'desa'
-                            ? feature.properties?.village || 'Tidak diketahui'
-                            : feature.properties?.district || 'Tidak diketahui'}
-                        </p>
-                        <p className="text-[10px] text-slate-500 truncate">
-                          {feature._type === 'desa'
-                            ? `Desa ${feature.properties?.village || ''}, Kec. ${feature.properties?.district || 'Baturaden'}`
-                            : `Kecamatan ${feature.properties?.district || ''}, Kab. Banyumas`}
-                        </p>
-                      </div>
-                      <Navigation size={12} className="text-slate-300 flex-shrink-0" />
-                    </button>
-                  ))
-                ) : query.trim() ? (
-                  <div className="px-4 py-6 text-center">
-                    <MapPin size={20} className="text-slate-300 mx-auto mb-2" />
-                    <p className="text-xs text-slate-500 font-medium">Tidak ditemukan</p>
-                    <p className="text-[10px] text-slate-400 mt-0.5">Coba kata kunci lain</p>
-                  </div>
-                ) : (
-                  <div className="px-4 py-6 text-center">
-                    <Search size={20} className="text-slate-300 mx-auto mb-2" />
-                    <p className="text-xs text-slate-500 font-medium">Ketik untuk mencari</p>
-                    <p className="text-[10px] text-slate-400 mt-0.5">Nama kecamatan atau desa</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
 
 function MapController({ selectedUmkm }: { selectedUmkm: any | null }) {
   const map = useMap();
@@ -334,7 +197,11 @@ function MapControlMenu({
   showTourRoute,
   setShowTourRoute,
   isCleanMode,
-  onToggleCleanMode
+  onToggleCleanMode,
+  geoJsonData,
+  villageData,
+  setTargetFeature,
+  onSelectDesa
 }: {
   activeLayer: MapLayerType;
   setActiveLayer: (layer: MapLayerType) => void;
@@ -345,9 +212,45 @@ function MapControlMenu({
   setShowTourRoute: (show: boolean) => void;
   isCleanMode?: boolean;
   onToggleCleanMode?: () => void;
+  geoJsonData: any;
+  villageData: any;
+  setTargetFeature: (feature: any) => void;
+  onSelectDesa: (desa: string | null) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [view, setView] = useState<'main' | 'layer' | 'category'>('main');
+  const [view, setView] = useState<'main' | 'layer' | 'category' | 'search'>('main');
+  const [searchQuery, setSearchQuery] = useState('');
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
+
+  // Search Results Logic
+  const searchResults = React.useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    const q = searchQuery.toLowerCase().trim();
+    const kecamatanResults = geoJsonData?.features
+      ? geoJsonData.features
+          .filter((f: any) => {
+            const district = f.properties?.district?.toLowerCase() || '';
+            return district.includes(q);
+          })
+          .map((f: any) => ({ ...f, _type: 'kecamatan' as const }))
+      : [];
+    const desaResults = villageData?.features
+      ? villageData.features
+          .filter((f: any) => {
+            const village = f.properties?.village?.toLowerCase() || '';
+            const district = f.properties?.district?.toLowerCase() || '';
+            return village.includes(q) || district.includes(q);
+          })
+          .map((f: any) => ({ ...f, _type: 'desa' as const }))
+      : [];
+    return [...desaResults, ...kecamatanResults];
+  }, [searchQuery, geoJsonData, villageData]);
+
+  const handleSelectSearch = (feature: any) => {
+    setTargetFeature(feature);
+    setSearchQuery('');
+    closeMenu();
+  };
 
   const categories = useMemo(() => {
     return Array.from(new Set(umkmData.map((u) => u.kategori_umkm?.nama).filter(Boolean)));
@@ -398,7 +301,7 @@ function MapControlMenu({
               animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: -20, x: 20 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="absolute right-0 top-16 w-[280px] bg-slate-900/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/10 overflow-hidden z-50 text-white"
+              className="absolute right-0 top-16 w-[280px] bg-white/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-slate-200/60 overflow-hidden z-50 text-slate-800"
             >
               <AnimatePresence mode="wait">
                 {view === 'main' && (
@@ -408,41 +311,117 @@ function MapControlMenu({
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.2 }}
-                    className="p-4"
+                    className="p-4 flex flex-col gap-3"
                   >
+                    {/* Search Trigger (Full Width) */}
+                    <button onClick={() => { setView('search'); setTimeout(() => searchInputRef.current?.focus(), 100); }} className="w-full flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-100">
+                      <div className="flex items-center gap-3 text-slate-700">
+                        <Search size={20} className="text-blue-500" />
+                        <span className="text-sm font-bold">Cari Lokasi...</span>
+                      </div>
+                      <ChevronLeft size={16} className="text-slate-400 rotate-180" />
+                    </button>
+
                     <div className="grid grid-cols-2 gap-3">
                       {/* Lapisan Peta */}
-                      <button onClick={() => setView('layer')} className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors">
-                        <Layers size={24} className="text-blue-400" />
-                        <span className="text-[11px] font-bold">Lapisan Peta</span>
+                      <button onClick={() => setView('layer')} className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-100">
+                        <Layers size={24} className="text-blue-600" />
+                        <span className="text-[11px] font-bold text-slate-700">Lapisan Peta</span>
                       </button>
 
                       {/* Kategori */}
-                      <button onClick={() => setView('category')} className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors relative">
+                      <button onClick={() => setView('category')} className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-100 relative">
                         {activeCategories.size > 0 && (
                           <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
                         )}
-                        <Filter size={24} className="text-emerald-400" />
-                        <span className="text-[11px] font-bold">Filter UMKM</span>
+                        <Filter size={24} className="text-emerald-600" />
+                        <span className="text-[11px] font-bold text-slate-700">Filter UMKM</span>
                       </button>
 
                       {/* Rute Wisata */}
                       <button 
                         onClick={() => { setShowTourRoute(!showTourRoute); closeMenu(); }} 
-                        className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl transition-colors ${showTourRoute ? 'bg-amber-500/20 text-amber-300' : 'bg-white/5 hover:bg-white/10'}`}
+                        className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl transition-colors border ${showTourRoute ? 'bg-amber-50 border-amber-200 text-amber-700' : 'bg-slate-50 border-slate-100 hover:bg-slate-100'}`}
                       >
-                        <Route size={24} className={showTourRoute ? 'text-amber-400' : 'text-amber-400/50'} />
-                        <span className="text-[11px] font-bold">Rute Wisata</span>
+                        <Route size={24} className={showTourRoute ? 'text-amber-500' : 'text-amber-500/70'} />
+                        <span className={`text-[11px] font-bold ${showTourRoute ? 'text-amber-700' : 'text-slate-700'}`}>Rute Wisata</span>
                       </button>
 
                       {/* Zen Mode */}
                       <button 
                         onClick={() => { if (onToggleCleanMode) onToggleCleanMode(); closeMenu(); }} 
-                        className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl transition-colors ${isCleanMode ? 'bg-blue-500/20 text-blue-300' : 'bg-white/5 hover:bg-white/10'}`}
+                        className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl transition-colors border ${isCleanMode ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-slate-50 border-slate-100 hover:bg-slate-100'}`}
                       >
-                        {isCleanMode ? <Eye size={24} className="text-blue-400" /> : <EyeOff size={24} className="text-slate-400" />}
-                        <span className="text-[11px] font-bold">Peta Penuh</span>
+                        {isCleanMode ? <Eye size={24} className="text-blue-600" /> : <EyeOff size={24} className="text-slate-400" />}
+                        <span className={`text-[11px] font-bold ${isCleanMode ? 'text-blue-700' : 'text-slate-700'}`}>Peta Penuh</span>
                       </button>
+                    </div>
+                  </motion.div>
+                )}
+
+                {view === 'search' && (
+                  <motion.div 
+                    key="search"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex flex-col max-h-[350px]"
+                  >
+                    <div className="flex items-center gap-2 p-4 border-b border-slate-100 bg-slate-50/50">
+                      <button onClick={() => setView('main')} className="p-1 shrink-0 rounded-full hover:bg-slate-200 transition-colors">
+                        <ChevronLeft size={18} className="text-slate-600" />
+                      </button>
+                      <input
+                        ref={searchInputRef}
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Cari kecamatan / desa..."
+                        className="w-full bg-transparent border-none focus:outline-none text-sm font-medium text-slate-800 placeholder-slate-400"
+                      />
+                      {searchQuery && (
+                        <button onClick={() => setSearchQuery('')} className="p-1 shrink-0 text-slate-400 hover:text-slate-600">
+                          <X size={16} />
+                        </button>
+                      )}
+                    </div>
+                    <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1">
+                      {searchResults.length > 0 ? (
+                        searchResults.map((feature: any, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => handleSelectSearch(feature)}
+                            className="w-full flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors text-left"
+                          >
+                            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0 mt-0.5">
+                              {feature._type === 'kecamatan' ? (
+                                <MapPin size={16} className="text-blue-600" />
+                              ) : (
+                                <Building2 size={16} className="text-blue-500" />
+                              )}
+                            </div>
+                            <div>
+                              <h5 className="text-xs font-bold text-slate-800">
+                                {feature._type === 'kecamatan' ? `Kecamatan ${feature.properties?.district}` : feature.properties?.village}
+                              </h5>
+                              <p className="text-[10px] text-slate-500 mt-0.5">
+                                {feature._type === 'kecamatan' ? 'Pusat Pemerintahan' : `Kec. ${feature.properties?.district}, Banyumas`}
+                              </p>
+                            </div>
+                          </button>
+                        ))
+                      ) : searchQuery.length > 0 ? (
+                        <div className="py-8 text-center">
+                          <MapPin size={20} className="text-slate-300 mx-auto mb-2" />
+                          <p className="text-xs text-slate-500 font-medium">Tidak ditemukan</p>
+                        </div>
+                      ) : (
+                        <div className="py-8 text-center">
+                          <Search size={20} className="text-slate-300 mx-auto mb-2" />
+                          <p className="text-xs text-slate-500 font-medium">Ketik untuk mencari lokasi</p>
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 )}
@@ -455,29 +434,29 @@ function MapControlMenu({
                     exit={{ opacity: 0, x: 20 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <div className="flex items-center gap-2 p-4 border-b border-white/10">
-                      <button onClick={() => setView('main')} className="p-1 rounded-full hover:bg-white/10 transition-colors">
-                        <ChevronLeft size={18} />
+                    <div className="flex items-center gap-2 p-4 border-b border-slate-100 bg-slate-50/50">
+                      <button onClick={() => setView('main')} className="p-1 rounded-full hover:bg-slate-200 transition-colors">
+                        <ChevronLeft size={18} className="text-slate-600" />
                       </button>
-                      <span className="font-bold text-sm tracking-wide">Lapisan Peta</span>
+                      <span className="font-bold text-sm tracking-wide text-slate-800">Lapisan Peta</span>
                     </div>
                     <div className="p-3 space-y-2">
                       {mapLayers.map((l) => (
                         <button
                           key={l.id}
                           onClick={() => { setActiveLayer(l.id); closeMenu(); }}
-                          className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${
-                            activeLayer === l.id ? 'bg-blue-500/20 border border-blue-500/30' : 'hover:bg-white/5 border border-transparent'
+                          className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all border ${
+                            activeLayer === l.id ? 'bg-blue-50 border-blue-200 shadow-sm' : 'hover:bg-slate-50 border-transparent'
                           }`}
                         >
                           <div className={`w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br ${l.previewGradient} shadow-inner`}>
                             <l.icon size={16} className="text-slate-800" strokeWidth={2.5} />
                           </div>
                           <div className="text-left flex-1">
-                            <h5 className={`text-xs font-bold ${activeLayer === l.id ? 'text-blue-400' : 'text-slate-200'}`}>{l.name}</h5>
-                            <p className="text-[9px] text-slate-400 mt-0.5">{l.description}</p>
+                            <h5 className={`text-xs font-bold ${activeLayer === l.id ? 'text-blue-700' : 'text-slate-700'}`}>{l.name}</h5>
+                            <p className="text-[9px] text-slate-500 mt-0.5">{l.description}</p>
                           </div>
-                          {activeLayer === l.id && <Check size={16} className="text-blue-400" strokeWidth={3} />}
+                          {activeLayer === l.id && <Check size={16} className="text-blue-600" strokeWidth={3} />}
                         </button>
                       ))}
                     </div>
@@ -492,15 +471,15 @@ function MapControlMenu({
                     exit={{ opacity: 0, x: 20 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <div className="flex items-center justify-between p-4 border-b border-white/10">
+                    <div className="flex items-center justify-between p-4 border-b border-slate-100 bg-slate-50/50">
                       <div className="flex items-center gap-2">
-                        <button onClick={() => setView('main')} className="p-1 rounded-full hover:bg-white/10 transition-colors">
-                          <ChevronLeft size={18} />
+                        <button onClick={() => setView('main')} className="p-1 rounded-full hover:bg-slate-200 transition-colors">
+                          <ChevronLeft size={18} className="text-slate-600" />
                         </button>
-                        <span className="font-bold text-sm tracking-wide">Filter UMKM</span>
+                        <span className="font-bold text-sm tracking-wide text-slate-800">Filter UMKM</span>
                       </div>
                       {activeCategories.size > 0 && (
-                        <button onClick={() => setActiveCategories(new Set())} className="text-[10px] font-bold px-2 py-1 bg-emerald-500/20 text-emerald-400 rounded-md hover:bg-emerald-500/30 transition-colors">
+                        <button onClick={() => setActiveCategories(new Set())} className="text-[10px] font-bold px-2 py-1 bg-emerald-50 text-emerald-600 rounded-md hover:bg-emerald-100 transition-colors">
                           Reset
                         </button>
                       )}
@@ -512,16 +491,16 @@ function MapControlMenu({
                           <button
                             key={cat}
                             onClick={() => toggleCategory(cat)}
-                            className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${
-                              isActive ? 'bg-emerald-500/20 border border-emerald-500/30' : 'hover:bg-white/5 border border-transparent'
+                            className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all border ${
+                              isActive ? 'bg-emerald-50 border-emerald-200 shadow-sm' : 'hover:bg-slate-50 border-transparent'
                             }`}
                           >
                             <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors ${
-                              isActive ? 'border-emerald-500 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]' : 'border-slate-500'
+                              isActive ? 'border-emerald-500 bg-emerald-500' : 'border-slate-300'
                             }`}>
                               {isActive && <Check size={10} className="text-white" strokeWidth={3} />}
                             </div>
-                            <span className={`text-xs font-bold ${isActive ? 'text-emerald-400' : 'text-slate-300'}`}>{cat}</span>
+                            <span className={`text-xs font-bold ${isActive ? 'text-emerald-700' : 'text-slate-700'}`}>{cat}</span>
                           </button>
                         );
                       })}
@@ -742,7 +721,6 @@ export default function BanyumasMap({ geoJsonData, outlineData, maskData, villag
       {/* UI Overlays — outside MapContainer to avoid Leaflet appendChild errors */}
       {!isCleanMode && (
         <>
-          <SearchKecamatan geoJsonData={geoJsonData} villageData={villageData} onSelectFeature={setTargetFeature} onSelectDesa={onSelectDesa} />
           <MapLegend />
           <MapInfoBadge />
           <MapStatsWidget umkmData={umkmData} selectedDesa={selectedDesa} />
@@ -760,6 +738,10 @@ export default function BanyumasMap({ geoJsonData, outlineData, maskData, villag
         setShowTourRoute={setShowTourRoute}
         isCleanMode={isCleanMode}
         onToggleCleanMode={onToggleCleanMode}
+        geoJsonData={geoJsonData}
+        villageData={villageData}
+        setTargetFeature={setTargetFeature}
+        onSelectDesa={onSelectDesa}
       />
 
       <MapContainer
