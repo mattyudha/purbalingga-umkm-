@@ -182,7 +182,7 @@ export default function LoginPage() {
         >
           <div className="lg:hidden flex flex-col items-center justify-center mb-10 text-center">
             <Link href="/" className="flex flex-col items-center gap-4 group">
-              <div className="bg-gradient-to-tr from-slate-900 to-slate-800 p-4 rounded-[1.5rem] text-white shadow-xl shadow-slate-900/20 border border-slate-700/50 group-hover:scale-105 transition-all duration-500 ring-1 ring-white/10">
+              <div className="bg-white p-4 rounded-[1.5rem] shadow-xl shadow-blue-500/10 border border-slate-200 group-hover:scale-105 transition-all duration-500 ring-1 ring-slate-100">
                 <img src="/purbalinggalogo.png" alt="Logo Banyumas" className="w-16 h-16 object-contain drop-shadow-md" />
               </div>
               <div className="flex flex-col items-center">
