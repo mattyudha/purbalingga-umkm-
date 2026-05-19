@@ -66,7 +66,7 @@ function SearchKecamatan({ geoJsonData, villageData, onSelectFeature, onSelectDe
   };
 
   return (
-    <div className="absolute top-4 right-4 z-[1000]">
+    <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-[1000]">
       <div className="relative">
         {/* Search Input */}
         <div className={`flex items-center gap-2 px-3 py-2.5 rounded-xl shadow-lg border transition-all duration-200 bg-white/95 backdrop-blur-sm ${
@@ -250,7 +250,7 @@ function BaturadenFocusController({ baturadenFeature }: { baturadenFeature: any 
 function ZoomButtons() {
   const map = useMap();
   return (
-    <div className="absolute bottom-8 right-4 z-[1000] flex flex-col gap-2">
+    <div className="absolute bottom-[110px] right-2 sm:bottom-8 sm:right-4 z-[1000] flex flex-col gap-2">
       <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-slate-200 flex flex-col">
         <button 
           className="w-10 h-10 flex items-center justify-center hover:bg-slate-50 border-b border-slate-100 text-slate-600 transition-colors"
@@ -273,7 +273,7 @@ function ZoomButtons() {
 
 function MapLegend() {
   return (
-    <div className="absolute bottom-8 left-4 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-slate-200 p-3 min-w-[200px]">
+    <div className="absolute bottom-[110px] left-2 sm:bottom-8 sm:left-4 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-slate-200 p-3 min-w-[160px] sm:min-w-[200px] hidden sm:block">
       <div className="flex items-center gap-2 mb-2 pb-2 border-b border-slate-100">
         <Layers size={14} className="text-blue-600" />
         <span className="text-xs font-bold text-slate-700 uppercase tracking-wide">Legenda Peta</span>
@@ -308,7 +308,7 @@ function MapLegend() {
 
 function MapInfoBadge() {
   return (
-    <div className="absolute top-4 left-4 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-slate-200 px-4 py-3">
+    <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-slate-200 px-3 sm:px-4 py-2 sm:py-3">
       <div className="flex items-center gap-2">
         <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
           <MapPin size={16} className="text-blue-600" />
@@ -343,7 +343,7 @@ function CategoryLayerToggle({ umkmData, activeCategories, onChange }: { umkmDat
   const clearAll = () => onChange(new Set());
 
   return (
-    <div className="absolute top-28 right-4 z-[1000]">
+    <div className="absolute top-[3.25rem] right-2 sm:top-28 sm:right-4 z-[1000]">
       <div className="relative">
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -421,7 +421,7 @@ function CategoryLayerToggle({ umkmData, activeCategories, onChange }: { umkmDat
 
 function TourRouteButton({ showTourRoute, onToggle }: { showTourRoute: boolean; onToggle: () => void }) {
   return (
-    <div className="absolute top-40 right-4 z-[1000]">
+    <div className="absolute top-[6.5rem] right-2 sm:top-40 sm:right-4 z-[1000]">
       <button
         onClick={onToggle}
         className={`flex items-center gap-2 px-3 py-2.5 rounded-xl shadow-lg border transition-all duration-200 ${
@@ -516,7 +516,7 @@ function MapStatsWidget({ umkmData, selectedDesa }: { umkmData: any[]; selectedD
   if (!umkmData.length) return null;
 
   return (
-    <div className="absolute top-20 left-4 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-slate-200 px-4 py-3">
+    <div className="absolute top-16 left-2 sm:top-20 sm:left-4 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-slate-200 px-3 py-2 sm:px-4 sm:py-3 hidden md:block">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center">
@@ -606,7 +606,7 @@ function LayerSwitcher({ activeLayer, onChange }: { activeLayer: MapLayerType; o
   const currentLayer = mapLayers.find((l) => l.id === activeLayer)!;
 
   return (
-    <div className="absolute top-16 right-4 z-[1000]">
+    <div className="absolute top-14 right-2 sm:top-16 sm:right-4 z-[1000] hidden sm:block">
       <div className="relative">
         {/* Toggle Button */}
         <button

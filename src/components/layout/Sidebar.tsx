@@ -81,6 +81,14 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'menu' | 'reviews' | 'about'>('overview');
+  const [isMobileSheetOpen, setIsMobileSheetOpen] = useState(false);
+
+  // Auto open sheet when an UMKM is selected
+  React.useEffect(() => {
+    if (selectedUmkm) {
+      setIsMobileSheetOpen(true);
+    }
+  }, [selectedUmkm]);
 
   const categories = Array.from(new Set(umkmList.map(item => item.kategori_umkm?.nama).filter(Boolean)));
 
@@ -93,9 +101,20 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
   });
 
   return (
-    <div className="flex flex-col h-full bg-slate-50/80 border-r border-slate-200/60 shadow-[0_0_80px_rgba(0,0,0,0.03)] relative z-20 w-[420px] shrink-0 overflow-hidden">
-      {/* Search & Filter Header (Removed Logo for redundancy) */}
-      <div className="p-7 pb-5 space-y-6 bg-white/70 backdrop-blur-2xl sticky top-0 z-30 border-b border-slate-200/50 shadow-sm">
+    <div className={`flex flex-col bg-slate-50/95 md:bg-slate-50/80 backdrop-blur-xl md:backdrop-blur-none border-r border-slate-200/60 shadow-[0_-10px_40px_rgba(0,0,0,0.15)] md:shadow-[0_0_80px_rgba(0,0,0,0.03)] absolute md:relative z-20 w-full md:w-[420px] shrink-0 overflow-hidden transition-all duration-500 ease-in-out ${isMobileSheetOpen ? 'h-[85vh] bottom-0 rounded-t-3xl' : 'h-[100px] bottom-0 rounded-t-3xl'} md:h-full md:rounded-none md:bottom-auto`}>
+      {/* Mobile Handle */}
+      <div 
+        className="md:hidden flex flex-col items-center justify-center pt-4 pb-2 cursor-pointer bg-transparent relative z-40 shrink-0"
+        onClick={() => setIsMobileSheetOpen(!isMobileSheetOpen)}
+      >
+        <div className="w-12 h-1.5 bg-slate-300 rounded-full mb-1"></div>
+        {!isMobileSheetOpen && (
+          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Tarik untuk Eksplorasi</p>
+        )}
+      </div>
+
+      {/* Search & Filter Header */}
+      <div className={`p-5 md:p-7 pb-4 md:pb-5 space-y-4 md:space-y-6 bg-transparent sticky top-0 z-30 transition-opacity duration-300 ${!isMobileSheetOpen && 'md:opacity-100 opacity-0 pointer-events-none md:pointer-events-auto hidden md:block'}`}>
         <div className="flex items-center justify-between">
           <div className="flex flex-col">
             <h2 className="text-sm font-heading font-black text-slate-900 tracking-widest uppercase">Eksplorasi UMKM</h2>
@@ -161,7 +180,7 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
         )}
       </div>
 
-      <div className="flex-1 relative overflow-hidden">
+      <div className={`flex-1 relative overflow-hidden transition-opacity duration-300 ${!isMobileSheetOpen ? 'md:opacity-100 opacity-0 pointer-events-none md:pointer-events-auto hidden md:block' : ''}`}>
         <ScrollArea className="h-full">
           <div className="p-5 pb-10 space-y-3">
             {isLoading ? (

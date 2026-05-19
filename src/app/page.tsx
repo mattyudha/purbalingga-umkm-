@@ -124,7 +124,7 @@ export default function Home() {
         />
 
         {/* Map Area */}
-        <div className="flex-1 relative bg-slate-100">
+        <div className="absolute inset-0 md:relative md:flex-1 bg-slate-100 z-0">
           <BanyumasMap 
             geoJsonData={geoJsonData} 
             outlineData={outlineData}
