@@ -146,7 +146,7 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
       />
 
       <div 
-        className={`flex flex-col bg-slate-50/95 md:bg-white border-r border-slate-200/60 shadow-[0_-10px_40px_rgba(0,0,0,0.15)] md:shadow-[0_0_80px_rgba(0,0,0,0.03)] absolute md:relative z-20 w-full md:w-[420px] shrink-0 overflow-hidden transition-all duration-500 ease-in-out ${isMobileSheetOpen ? 'h-[90dvh] bottom-0 rounded-t-[2.5rem]' : 'h-[100px] bottom-0 rounded-t-[2.5rem]'} md:h-full md:rounded-none md:bottom-auto`}
+        className={`flex flex-col bg-slate-50/95 md:bg-white border-r border-slate-200/60 shadow-[0_-10px_40px_rgba(0,0,0,0.15)] md:shadow-[0_0_80px_rgba(0,0,0,0.03)] absolute md:relative z-20 w-full md:w-[420px] shrink-0 overflow-hidden transition-all duration-500 ease-in-out ${isMobileSheetOpen ? 'h-[90dvh] bottom-0 rounded-t-[2.5rem]' : 'h-[140px] bottom-0 rounded-t-[2.5rem]'} md:h-full md:rounded-none md:bottom-auto`}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
@@ -175,12 +175,14 @@ export default function Sidebar({ umkmList, selectedUmkm, onSelectUmkm, selected
 
         {/* Mobile Handle */}
         <div 
-          className="md:hidden flex flex-col items-center justify-center pt-4 pb-2 cursor-pointer bg-transparent relative z-40 shrink-0"
+          className="md:hidden flex flex-col items-center justify-center pt-5 pb-4 cursor-pointer bg-transparent relative z-40 shrink-0"
           onClick={() => setIsMobileSheetOpen(!isMobileSheetOpen)}
         >
-          <div className="w-12 h-1.5 bg-slate-300 rounded-full mb-1"></div>
+          <div className="w-14 h-1.5 bg-slate-300 rounded-full mb-2"></div>
           {!isMobileSheetOpen && (
-            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Tarik untuk Eksplorasi</p>
+            <p className="text-[11px] font-black text-slate-500 uppercase tracking-widest mt-1 flex items-center gap-2">
+              <span>↑</span> Tarik untuk Eksplorasi
+            </p>
           )}
         </div>
 

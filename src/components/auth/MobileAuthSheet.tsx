@@ -38,17 +38,15 @@ export default function MobileAuthSheet({ isOpen, onClose, initialMode = 'login'
     }
   }, [isOpen, initialMode]);
 
-  // Prevent background scroll when sheet is open (safe approach - no position:fixed on body)
+  // Prevent background page scroll when sheet is open (body only, not html)
+  // We only hide overflow on body - NOT html - so iOS can still render fixed elements correctly
   React.useEffect(() => {
     if (isOpen) {
-      document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
     } else {
-      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
     }
     return () => {
-      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
     };
   }, [isOpen]);
