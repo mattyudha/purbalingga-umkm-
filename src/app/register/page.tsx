@@ -100,8 +100,7 @@ export default function RegisterPage() {
 
   // ── Register Form ───────────────────────────────────────────────────────────
   return (
-    // Mobile: fixed+locked. Desktop: normal min-h-screen flow.
-    <div className="fixed inset-0 lg:static lg:min-h-screen flex bg-[#F8F9FB] selection:bg-blue-100 selection:text-blue-900 overflow-hidden lg:overflow-visible">
+    <div className="fixed inset-0 flex bg-[#F8F9FB] selection:bg-blue-100 selection:text-blue-900 overflow-hidden">
       {/* Left Side - Visual Branding (desktop only) */}
       <div className="hidden lg:flex lg:w-[50%] relative overflow-hidden bg-slate-900 shrink-0">
         <div className="absolute inset-0 z-0">
@@ -198,7 +197,6 @@ export default function RegisterPage() {
           style={{ transform: 'translate(-30%, 30%)' }}
         />
 
-        {/* Form card */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -209,11 +207,8 @@ export default function RegisterPage() {
             p-8 sm:p-10 lg:p-12
             rounded-[2.5rem] lg:rounded-[1.5rem]
             shadow-[0_20px_60px_-15px_rgba(0,0,0,0.06)] lg:shadow-[0_8px_30px_rgb(0,0,0,0.05)]
-            border border-white/60 lg:border-slate-100 mx-auto"
-          style={{
-            marginTop: 'max(env(safe-area-inset-top, 0px), 32px)',
-            marginBottom: 'max(env(safe-area-inset-bottom, 0px), 32px)',
-          }}
+            border border-white/60 lg:border-slate-100 mx-auto
+            my-8 lg:my-0"
         >
           {/* Mobile Logo */}
           <div className="lg:hidden flex flex-col items-center justify-center mb-10 text-center">

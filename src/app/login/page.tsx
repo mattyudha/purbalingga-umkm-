@@ -62,8 +62,7 @@ export default function LoginPage() {
   };
 
   return (
-    // Mobile: fixed+locked. Desktop: normal min-h-screen flow.
-    <div className="fixed inset-0 lg:static lg:min-h-screen flex bg-[#F8F9FB] selection:bg-blue-100 selection:text-blue-900 overflow-hidden lg:overflow-visible">
+    <div className="fixed inset-0 flex bg-[#F8F9FB] selection:bg-blue-100 selection:text-blue-900 overflow-hidden">
       {/* Left Side - Premium Map Visual (desktop only) */}
       <div className="hidden lg:flex lg:w-[55%] relative overflow-hidden bg-slate-900 shrink-0">
         <div className="absolute inset-0 z-0">
@@ -168,9 +167,6 @@ export default function LoginPage() {
           style={{ transform: 'translate(-30%, 30%)' }}
         />
 
-        {/* Form card
-             Mobile : scrollable, safe-area margins
-             Desktop: centered, larger card + larger text */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -181,12 +177,8 @@ export default function LoginPage() {
             p-8 sm:p-10 lg:p-12
             rounded-[2.5rem] lg:rounded-[1.5rem]
             shadow-[0_20px_60px_-15px_rgba(0,0,0,0.06)] lg:shadow-[0_8px_30px_rgb(0,0,0,0.05)]
-            border border-white/60 lg:border-slate-100 mx-auto"
-          style={{
-            // Safe-area margins only matter on mobile (notch devices)
-            marginTop: 'max(env(safe-area-inset-top, 0px), 32px)',
-            marginBottom: 'max(env(safe-area-inset-bottom, 0px), 32px)',
-          }}
+            border border-white/60 lg:border-slate-100 mx-auto
+            my-8 lg:my-0"
         >
           <div className="lg:hidden flex flex-col items-center justify-center mb-16 text-center">
             <Link href="/" className="flex flex-col items-center gap-4 group">
