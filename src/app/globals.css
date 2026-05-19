@@ -147,10 +147,17 @@ body {
    Only applies to pointer:fine devices (mouse/trackpad = desktop).
    Mobile (touch-only) is explicitly excluded to prevent
    iOS keyboard layout jump bugs.
+
+   We zoom on body (not html) and compensate for the
+   shrunk body size so no white gaps appear.
    ============================================= */
 @media (pointer: fine) {
   html {
     zoom: 75%;
+  }
+  /* Ensure body always fills the full zoomed viewport */
+  body {
+    min-height: calc(100vh / 0.75);
   }
 }
 

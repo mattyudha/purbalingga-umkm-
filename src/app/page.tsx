@@ -109,7 +109,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col md:flex-row h-[100dvh] overflow-hidden bg-slate-50 relative">
+    <div className="flex flex-col md:flex-row overflow-hidden bg-slate-50 relative" style={{ height: '100%', minHeight: '100dvh' }}>
       {/* Mobile Navbar (Only visible on small screens) */}
       <div className="md:hidden w-full shrink-0 z-50">
         {!isCleanMode && <Navbar />}

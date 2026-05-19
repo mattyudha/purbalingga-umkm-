@@ -36,7 +36,7 @@ export default function RootLayout({
       lang="id"
       className={`${outfit.variable} ${jakarta.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-jakarta">{children}</body>
+      <body className="h-full min-h-screen flex flex-col font-jakarta">{children}</body>
     </html>
   );
 }
