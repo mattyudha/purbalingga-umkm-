@@ -114,7 +114,11 @@ export default function MobileAuthSheet({ isOpen, onClose, initialMode = 'login'
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed bottom-0 left-0 right-0 bg-white z-[120] rounded-t-[32px] md:hidden shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col max-h-[90dvh]"
+            className="fixed bottom-0 left-0 right-0 bg-white z-[120] rounded-t-[32px] md:hidden shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col"
+            style={{ 
+              maxHeight: '90svh',
+              paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+            }}
           >
             {/* Handle & Header */}
             <div className="relative flex flex-col items-center pt-4 pb-2 px-6 shrink-0">

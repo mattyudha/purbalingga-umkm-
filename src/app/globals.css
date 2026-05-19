@@ -122,6 +122,8 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+  /* Prevent iOS bounce/scroll instability */
+  overscroll-behavior: none;
 }
 
 @layer base {
@@ -133,9 +135,22 @@ body {
     background-image: radial-gradient(at top left, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
                       radial-gradient(at bottom right, rgba(16, 185, 129, 0.02) 0%, transparent 50%);
     min-height: 100vh;
+    min-height: 100dvh;
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* =============================================
+   Desktop-only zoom scale (75%)
+   Only applies to pointer:fine devices (mouse/trackpad = desktop).
+   Mobile (touch-only) is explicitly excluded to prevent
+   iOS keyboard layout jump bugs.
+   ============================================= */
+@media (pointer: fine) {
+  html {
+    zoom: 75%;
   }
 }
 
