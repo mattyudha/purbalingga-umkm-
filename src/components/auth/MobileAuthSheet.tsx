@@ -37,6 +37,33 @@ export default function MobileAuthSheet({ isOpen, onClose, initialMode = 'login'
     }
   }, [isOpen, initialMode]);
 
+  // Lock body scroll when open — prevents iOS from pushing layout up when keyboard appears
+  React.useEffect(() => {
+    if (isOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.overflow = 'hidden';
+    } else {
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.overflow = '';
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+    }
+    return () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -98,27 +125,28 @@ export default function MobileAuthSheet({ isOpen, onClose, initialMode = 'login'
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
+        <div className="fixed inset-0 z-[110] md:hidden" style={{ touchAction: 'none' }}>
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] md:hidden"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
           />
 
-          {/* Bottom Sheet */}
+          {/* Bottom Sheet — absolute inside locked container */}
           <motion.div
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed bottom-0 left-0 right-0 bg-white z-[120] rounded-t-[32px] md:hidden shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col"
+            className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[32px] shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.1)] flex flex-col"
             style={{ 
-              maxHeight: '90svh',
-              paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+              maxHeight: '92%',
+              paddingBottom: 'env(safe-area-inset-bottom, 12px)',
             }}
+            onClick={(e) => e.stopPropagation()}
           >
             {/* Handle & Header */}
             <div className="relative flex flex-col items-center pt-4 pb-2 px-6 shrink-0">
@@ -138,8 +166,8 @@ export default function MobileAuthSheet({ isOpen, onClose, initialMode = 'login'
               </p>
             </div>
 
-            {/* Scrollable Form Content */}
-            <div className="flex-1 overflow-y-auto px-6 py-6 pb-12">
+            {/* Scrollable Form Content — keyboard overlaps bottom, user can scroll to reach inputs */}
+            <div className="flex-1 overflow-y-auto px-6 py-6 pb-32" style={{ WebkitOverflowScrolling: 'touch' }}>
               <form onSubmit={handleSubmit} className="space-y-5">
                 {mode === 'register' && (
                   <div className="space-y-1.5">
@@ -252,7 +280,7 @@ export default function MobileAuthSheet({ isOpen, onClose, initialMode = 'login'
               </div>
             </div>
           </motion.div>
-        </>
+        </div>
       )}
     </AnimatePresence>
   );
