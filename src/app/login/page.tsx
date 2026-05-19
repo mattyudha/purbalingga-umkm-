@@ -62,16 +62,8 @@ export default function LoginPage() {
   };
 
   return (
-    // Outer wrapper: fixed on mobile to prevent horizontal drift/scroll
-    <div
-      className="flex bg-[#F8F9FB] selection:bg-blue-100 selection:text-blue-900"
-      style={{
-        position: 'fixed',
-        inset: 0,
-        overflow: 'hidden',
-        // On desktop revert to regular flow so the two-column layout works
-      }}
-    >
+    // Mobile: fixed+locked. Desktop: normal min-h-screen flow.
+    <div className="fixed inset-0 lg:static lg:min-h-screen flex bg-[#F8F9FB] selection:bg-blue-100 selection:text-blue-900 overflow-hidden lg:overflow-visible">
       {/* Left Side - Premium Map Visual (desktop only) */}
       <div className="hidden lg:flex lg:w-[55%] relative overflow-hidden bg-slate-900 shrink-0">
         <div className="absolute inset-0 z-0">
@@ -148,15 +140,12 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Right Side - scrollable form container, locked width = 100vw on mobile */}
+      {/* Right Side
+           Mobile : overflow-x locked, overflow-y scrolls (keyboard-safe)
+           Desktop: justify-center, no scroll needed             */}
       <div
-        className="flex-1 flex flex-col items-center lg:justify-center relative"
-        style={{
-          overflowX: 'hidden',        // ← prevents left/right swipe
-          overflowY: 'auto',          // ← allows vertical scroll when keyboard appears
-          WebkitOverflowScrolling: 'touch',
-          overscrollBehavior: 'contain',
-        }}
+        className="flex-1 flex flex-col items-center lg:justify-center relative overflow-x-hidden overflow-y-auto lg:overflow-hidden"
+        style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}
       >
         {/* Mobile Background */}
         <div className="absolute inset-0 z-0 lg:hidden pointer-events-none">
@@ -179,13 +168,22 @@ export default function LoginPage() {
           style={{ transform: 'translate(-30%, 30%)' }}
         />
 
-        {/* Form card — py-10 gives breathing room top/bottom */}
+        {/* Form card
+             Mobile : scrollable, safe-area margins
+             Desktop: centered, larger card + larger text */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45 }}
-          className="w-full max-w-[390px] relative z-10 bg-white/75 lg:bg-white backdrop-blur-2xl lg:backdrop-blur-none p-8 sm:p-10 rounded-[2.5rem] lg:rounded-[1.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.06)] border border-white/60 lg:border-slate-100 mx-auto"
+          className="w-full max-w-[390px] lg:max-w-[440px] relative z-10
+            bg-white/75 lg:bg-white
+            backdrop-blur-2xl lg:backdrop-blur-none
+            p-8 sm:p-10 lg:p-12
+            rounded-[2.5rem] lg:rounded-[1.5rem]
+            shadow-[0_20px_60px_-15px_rgba(0,0,0,0.06)] lg:shadow-[0_8px_30px_rgb(0,0,0,0.05)]
+            border border-white/60 lg:border-slate-100 mx-auto"
           style={{
+            // Safe-area margins only matter on mobile (notch devices)
             marginTop: 'max(env(safe-area-inset-top, 0px), 32px)',
             marginBottom: 'max(env(safe-area-inset-bottom, 0px), 32px)',
           }}
@@ -202,9 +200,9 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <div className="mb-8 pt-10 text-center lg:text-left">
-            <h2 className="text-[28px] lg:text-[32px] font-heading font-bold text-slate-900 mb-3 tracking-tighter leading-[1.1]">Selamat Datang<br/>Kembali.</h2>
-            <p className="text-[14px] text-slate-500 max-w-[260px] mx-auto lg:mx-0 leading-[1.6]">Masukkan kredensial Anda untuk mengakses panel manajemen UMKM.</p>
+          <div className="mb-8 pt-10 lg:pt-0 text-center lg:text-left">
+            <h2 className="text-[28px] lg:text-[36px] font-heading font-bold text-slate-900 mb-3 tracking-tighter leading-[1.1]">Selamat Datang<br/>Kembali.</h2>
+            <p className="text-[14px] lg:text-[15px] text-slate-500 max-w-[260px] lg:max-w-none mx-auto lg:mx-0 leading-[1.6]">Masukkan kredensial Anda untuk mengakses panel manajemen UMKM.</p>
           </div>
 
           <div className="space-y-5">
@@ -222,7 +220,7 @@ export default function LoginPage() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-[44px] bg-white border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition-all rounded-[10px] px-4 text-[15px] placeholder:text-[14px] placeholder:text-[#9CA3AF] shadow-sm"
+                    className="h-[44px] lg:h-[50px] bg-white border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition-all rounded-[10px] px-4 text-[15px] placeholder:text-[14px] placeholder:text-[#9CA3AF] shadow-sm"
                   />
                 </div>
               </div>
@@ -241,7 +239,7 @@ export default function LoginPage() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="h-[44px] bg-white border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition-all rounded-[10px] px-4 text-[15px] placeholder:text-[14px] placeholder:text-[#9CA3AF] shadow-sm pr-12"
+                    className="h-[44px] lg:h-[50px] bg-white border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition-all rounded-[10px] px-4 text-[15px] placeholder:text-[14px] placeholder:text-[#9CA3AF] shadow-sm pr-12"
                   />
                   <button
                     type="button"
@@ -264,7 +262,7 @@ export default function LoginPage() {
                 </motion.div>
               )}
 
-              <Button className="w-full h-[48px] bg-slate-900 hover:bg-slate-800 text-white rounded-[12px] font-semibold text-[15px] shadow-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 mt-2" type="submit" disabled={isLoading}>
+              <Button className="w-full h-[48px] lg:h-[54px] bg-slate-900 hover:bg-slate-800 text-white rounded-[12px] font-semibold text-[15px] lg:text-[16px] shadow-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 mt-2" type="submit" disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <Loader2 className="h-5 w-5 animate-spin" />

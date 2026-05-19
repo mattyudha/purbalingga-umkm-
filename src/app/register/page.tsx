@@ -100,15 +100,8 @@ export default function RegisterPage() {
 
   // ── Register Form ───────────────────────────────────────────────────────────
   return (
-    // Outer wrapper: fixed to prevent horizontal drift/swipe on mobile
-    <div
-      className="flex bg-[#F8F9FB] selection:bg-blue-100 selection:text-blue-900"
-      style={{
-        position: 'fixed',
-        inset: 0,
-        overflow: 'hidden',
-      }}
-    >
+    // Mobile: fixed+locked. Desktop: normal min-h-screen flow.
+    <div className="fixed inset-0 lg:static lg:min-h-screen flex bg-[#F8F9FB] selection:bg-blue-100 selection:text-blue-900 overflow-hidden lg:overflow-visible">
       {/* Left Side - Visual Branding (desktop only) */}
       <div className="hidden lg:flex lg:w-[50%] relative overflow-hidden bg-slate-900 shrink-0">
         <div className="absolute inset-0 z-0">
@@ -179,15 +172,10 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      {/* Right Side - scrollable form container, locked on mobile */}
+      {/* Right Side - scrollable on mobile, centered on desktop */}
       <div
-        className="flex-1 flex flex-col items-center lg:justify-center relative"
-        style={{
-          overflowX: 'hidden',
-          overflowY: 'auto',
-          WebkitOverflowScrolling: 'touch',
-          overscrollBehavior: 'contain',
-        }}
+        className="flex-1 flex flex-col items-center lg:justify-center relative overflow-x-hidden overflow-y-auto lg:overflow-hidden"
+        style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}
       >
         {/* Mobile Background */}
         <div className="absolute inset-0 z-0 lg:hidden pointer-events-none">
@@ -215,7 +203,13 @@ export default function RegisterPage() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45 }}
-          className="w-full max-w-[420px] relative z-10 bg-white/75 lg:bg-white backdrop-blur-2xl lg:backdrop-blur-none p-8 sm:p-10 rounded-[2.5rem] lg:rounded-[1.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.06)] border border-white/60 lg:border-slate-100 mx-auto"
+          className="w-full max-w-[420px] lg:max-w-[460px] relative z-10
+            bg-white/75 lg:bg-white
+            backdrop-blur-2xl lg:backdrop-blur-none
+            p-8 sm:p-10 lg:p-12
+            rounded-[2.5rem] lg:rounded-[1.5rem]
+            shadow-[0_20px_60px_-15px_rgba(0,0,0,0.06)] lg:shadow-[0_8px_30px_rgb(0,0,0,0.05)]
+            border border-white/60 lg:border-slate-100 mx-auto"
           style={{
             marginTop: 'max(env(safe-area-inset-top, 0px), 32px)',
             marginBottom: 'max(env(safe-area-inset-bottom, 0px), 32px)',
@@ -240,10 +234,10 @@ export default function RegisterPage() {
               <Plus className="w-4 h-4" />
               <span>Buat Akun Baru</span>
             </div>
-            <h2 className="text-[28px] lg:text-[32px] font-heading font-bold text-slate-900 mb-3 tracking-tighter leading-[1.1]">
+            <h2 className="text-[28px] lg:text-[36px] font-heading font-bold text-slate-900 mb-3 tracking-tighter leading-[1.1]">
               Daftar Pelaku<br />UMKM.
             </h2>
-            <p className="text-[14px] text-slate-500 max-w-[280px] mx-auto lg:mx-0 leading-[1.6]">
+            <p className="text-[14px] lg:text-[15px] text-slate-500 max-w-[280px] lg:max-w-none mx-auto lg:mx-0 leading-[1.6]">
               Lengkapi formulir di bawah untuk memulai akses portal manajemen UMKM Banyumas.
             </p>
           </div>
@@ -261,7 +255,7 @@ export default function RegisterPage() {
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="h-[44px] bg-white border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition-all rounded-[10px] px-4 text-[15px] placeholder:text-[14px] placeholder:text-[#9CA3AF] shadow-sm"
+                className="h-[44px] lg:h-[50px] bg-white border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition-all rounded-[10px] px-4 text-[15px] placeholder:text-[14px] placeholder:text-[#9CA3AF] shadow-sm"
               />
             </div>
 
@@ -276,7 +270,7 @@ export default function RegisterPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="h-[44px] bg-white border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition-all rounded-[10px] px-4 text-[15px] placeholder:text-[14px] placeholder:text-[#9CA3AF] shadow-sm"
+                className="h-[44px] lg:h-[50px] bg-white border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition-all rounded-[10px] px-4 text-[15px] placeholder:text-[14px] placeholder:text-[#9CA3AF] shadow-sm"
               />
             </div>
 
@@ -292,7 +286,7 @@ export default function RegisterPage() {
                   placeholder="Minimal 6 karakter"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-[44px] bg-white border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition-all rounded-[10px] px-4 text-[15px] placeholder:text-[14px] placeholder:text-[#9CA3AF] shadow-sm pr-12"
+                  className="h-[44px] lg:h-[50px] bg-white border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition-all rounded-[10px] px-4 text-[15px] placeholder:text-[14px] placeholder:text-[#9CA3AF] shadow-sm pr-12"
                 />
                 <button
                   type="button"
@@ -316,7 +310,7 @@ export default function RegisterPage() {
             )}
 
             <Button
-              className="w-full h-[48px] bg-slate-900 hover:bg-slate-800 text-white rounded-[12px] font-semibold text-[15px] shadow-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 mt-2"
+              className="w-full h-[48px] lg:h-[54px] bg-slate-900 hover:bg-slate-800 text-white rounded-[12px] font-semibold text-[15px] lg:text-[16px] shadow-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 mt-2"
               type="submit"
               disabled={isLoading}
             >
