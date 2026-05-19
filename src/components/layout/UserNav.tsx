@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { LogIn, User as UserIcon, LayoutDashboard, LogOut, ShieldCheck } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-export default function UserNav({ mobile }: { mobile?: boolean }) {
+export default function UserNav({ mobile, onAuthClick }: { mobile?: boolean, onAuthClick?: (type: 'login' | 'register') => void }) {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -56,16 +56,29 @@ export default function UserNav({ mobile }: { mobile?: boolean }) {
   if (!user) {
     return (
       <div className={`flex gap-2 ${mobile ? 'flex-col w-full' : 'items-center'}`}>
-        <Link href="/login" className={mobile ? 'w-full' : ''}>
-          <Button variant="ghost" size="sm" className={`text-slate-600 ${mobile ? 'w-full justify-start rounded-xl' : ''}`}>
-            <LogIn className="w-4 h-4 mr-2" /> Masuk
-          </Button>
-        </Link>
-        <Link href="/register" className={mobile ? 'w-full' : ''}>
-          <Button size="sm" className={`bg-blue-600 hover:bg-blue-700 text-white ${mobile ? 'w-full rounded-xl' : ''}`}>
-            Daftar
-          </Button>
-        </Link>
+        {mobile && onAuthClick ? (
+          <>
+            <Button variant="ghost" size="sm" onClick={() => onAuthClick('login')} className="text-slate-600 w-full justify-start rounded-xl">
+              <LogIn className="w-4 h-4 mr-2" /> Masuk
+            </Button>
+            <Button size="sm" onClick={() => onAuthClick('register')} className="bg-blue-600 hover:bg-blue-700 text-white w-full rounded-xl">
+              Daftar
+            </Button>
+          </>
+        ) : (
+          <>
+            <Link href="/login" className={mobile ? 'w-full' : ''}>
+              <Button variant="ghost" size="sm" className={`text-slate-600 ${mobile ? 'w-full justify-start rounded-xl' : ''}`}>
+                <LogIn className="w-4 h-4 mr-2" /> Masuk
+              </Button>
+            </Link>
+            <Link href="/register" className={mobile ? 'w-full' : ''}>
+              <Button size="sm" className={`bg-blue-600 hover:bg-blue-700 text-white ${mobile ? 'w-full rounded-xl' : ''}`}>
+                Daftar
+              </Button>
+            </Link>
+          </>
+        )}
       </div>
     );
   }

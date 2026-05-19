@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Menu, X, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import UserNav from './UserNav';
+import MobileAuthSheet from '@/components/auth/MobileAuthSheet';
 import { cn } from '@/lib/utils';
 
 const navLinks = [
@@ -18,6 +19,7 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [authSheet, setAuthSheet] = useState<'login' | 'register' | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -120,7 +122,10 @@ export default function Navbar() {
               
               <div className="flex-1 overflow-y-auto py-6 px-4 space-y-2">
                 <div className="md:hidden mb-6 px-2">
-                  <UserNav mobile />
+                  <UserNav mobile onAuthClick={(type) => {
+                    setIsOpen(false);
+                    setAuthSheet(type);
+                  }} />
                 </div>
                 {navLinks.map((link) => (
                   <Link
@@ -152,6 +157,13 @@ export default function Navbar() {
           </>
         )}
       </AnimatePresence>
+
+      {/* Mobile Auth Sheet Pop-up */}
+      <MobileAuthSheet 
+        isOpen={authSheet !== null} 
+        onClose={() => setAuthSheet(null)} 
+        initialMode={authSheet || 'login'} 
+      />
     </nav>
   );
 }
